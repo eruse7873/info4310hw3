@@ -6,6 +6,7 @@
             display: flex;
             flex-direction: column;
             max-width: 75%;
+
         }
 
         .filter {
@@ -18,6 +19,7 @@
             display: flex;
             flex-direction: row;
             max-width: 90%;
+            height: 150vh;
 
         }
 
@@ -87,6 +89,7 @@
                 d.REVIEW = parseInt(d.review_count)
                 d.CAT = JSON.parse(d.categories)
                 d.LOCATION = JSON.parse(d.location)
+                d.POSITION = [d.LOCATION['coordinate']['longitude'] , d.LOCATION['coordinate']['latitude']];
             })
             console.log(data);
 
@@ -123,6 +126,15 @@
                 .datum(zipsMesh)
                 .attr("class", "zip-outline")
                 .attr("d", path);
+
+
+            map.selectAll("circle").data(data)
+                .join("circle")
+                .attr("r", 1.5)
+                .attr("cx", d => projection(d.POSITION)[0])
+                .attr("cy", d => projection(d.POSITION)[1])
+                .attr("fill", "red");
+
 
         }
         getData()
