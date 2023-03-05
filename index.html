@@ -1,4 +1,3 @@
-
 <html>
 
 <body>
@@ -19,6 +18,7 @@
             display: flex;
             flex-direction: row;
             max-width: 90%;
+
         }
 
         .list {
@@ -31,14 +31,20 @@
         }
 
         .graticule {
-            fill: none;
+            fill: grey;
             stroke: lightgrey;
         }
 
         .zip-outline {
-            stroke: blue;
-            stroke-width: 1px;
+            stroke: lightgrey;
+            stroke-width: .5px;
             fill: none;
+        }
+
+        .state-outline {
+            stroke: darkgrey;
+            stroke-width: .5px;
+            fill: green;
         }
     </style>
     <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -48,7 +54,7 @@
             <div class="filter">
                 <h1> Filters </h1>
             </div>
-            <svg id="map" width = 1000 height = 600></svg>
+            <svg id="map" width=1000 height=700></svg>
         </div>
         <div class="list">
             <h1> List </h1>
@@ -68,7 +74,7 @@
 
 
             let data = await d3.csv("yelp_boston.csv", d3.autotype);
-            const boston = await d3.json("Boston_Street_Segments.json");
+            const boston = await d3.json("output.json");
 
             console.log(boston);
 
@@ -86,6 +92,10 @@
 
             var zips = topojson.feature(boston, boston.objects.Boston_Street_Segments);
             var zipsMesh = topojson.mesh(boston, boston.objects.Boston_Street_Segments);
+
+            var states = topojson.feature(boston, boston.objects.City_of_Boston_Boundary);
+            var stateMesh = topojson.mesh(boston, boston.objects.City_of_Boston_Boundary);
+
             var projection = d3.geoMercator().fitSize([mapWidth, mapHeight], zips);
             var path = d3.geoPath().projection(projection);
 
@@ -96,9 +106,16 @@
                 .attr("class", "graticule")
                 .attr("d", path(d3.geoGraticule10()));
 
+
+            viewport.append("path")
+                .datum(stateMesh)
+                .attr("class", "state-outline")
+                .attr("d", path);
+
             viewport.selectAll(".zip").data(zips.features)
                 .join("path")
                 .attr("class", "zip")
+                .attr("fill", "None")
                 .attr('stroke', 'None')
                 .attr("d", path);
 
@@ -106,7 +123,6 @@
                 .datum(zipsMesh)
                 .attr("class", "zip-outline")
                 .attr("d", path);
-
 
         }
         getData()
