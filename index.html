@@ -1,62 +1,115 @@
 <html>
-    <body>
-        <style>
-            .left_panel {
-                display: flex;
-                flex-direction: column;
-                max-width: 75%;
-            }
 
-            .filter {
-                max-height: 35%;
-                max-width: 100%;
-            }
-            
+<body>
+    <style>
+        .left_panel {
+            display: flex;
+            flex-direction: column;
+            max-width: 75%;
+        }
 
-            .container {
-                display: flex;
-                flex-direction: row;
-                max-width: 90%;
-            }
+        .filter {
+            max-height: 35%;
+            max-width: 100%;
+        }
 
-            .list {
-                max-width: 25%;
-            }
 
-            #map {
-                max-width: 100%;
-                max-height: 65%
-            }
-        </style>
-        <script src="https://d3js.org/d3.v5.min.js"></script>
-        <div class = "container"> 
-            <div class = "left_panel">
-                <div class ="filter">
-                    <h1> Filters </h1>
-                </div>
-                <svg id="map" ></svg>
+        .container {
+            display: flex;
+            flex-direction: row;
+            max-width: 90%;
+        }
+
+        .list {
+            max-width: 25%;
+        }
+
+        #map {
+            max-width: 100%;
+            max-height: 65%
+        }
+
+        .graticule {
+            fill: none;
+            stroke: lightgrey;
+        }
+
+        .zip-outline {
+            stroke: blue;
+            stroke-width: 1px;
+            fill: none;
+        }
+    </style>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+    <div class="container">
+        <div class="left_panel">
+            <div class="filter">
+                <h1> Filters </h1>
             </div>
-            <div class = "list">
-                <h1> List </h1>
-                <svg id="svglist"></svg>
-            </div>
+            <svg id="map" width = 1000 height = 600></svg>
         </div>
-        <script>
-            const getData = async function () {
-                let data = await d3.csv("yelp_boston.csv", d3.autotype);
+        <div class="list">
+            <h1> List </h1>
+            <svg id="svglist"></svg>
+        </div>
+    </div>
+    <script>
+        const getData = async function () {
+            const svg = d3.select("#map");
+            const width = svg.attr("width");
+            const height = svg.attr("height");
+            const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+            const mapWidth = width - margin.left - margin.right;
+            const mapHeight = height - margin.top - margin.bottom;
+            const map = svg.append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                console.log(d3.map(data, d=>d.latitude))
-                data.forEach((d)=>{
-                    d.LAT = parseInt(d.latitude)
-                    d.LONG = parseInt(d.longitude)
-                    d.RATING = parseInt(d.rating)
-                    d.REVIEW = parseInt(d.review_count)
-                    d.CAT = JSON.parse(d.categories)
-                    d.LOCATION = JSON.parse(d.location)
-                })
-                console.log(data);
-            }
-            getData()
-        </script>
-    </body>
+
+            let data = await d3.csv("yelp_boston.csv", d3.autotype);
+            const boston = await d3.json("Boston_Street_Segments.json");
+
+            console.log(boston);
+
+
+            console.log(d3.map(data, d => d.latitude))
+            data.forEach((d) => {
+                d.LAT = parseInt(d.latitude)
+                d.LONG = parseInt(d.longitude)
+                d.RATING = parseInt(d.rating)
+                d.REVIEW = parseInt(d.review_count)
+                d.CAT = JSON.parse(d.categories)
+                d.LOCATION = JSON.parse(d.location)
+            })
+            console.log(data);
+
+            var zips = topojson.feature(boston, boston.objects.Boston_Street_Segments);
+            var zipsMesh = topojson.mesh(boston, boston.objects.Boston_Street_Segments);
+            var projection = d3.geoMercator().fitSize([mapWidth, mapHeight], zips);
+            var path = d3.geoPath().projection(projection);
+
+
+            let viewport = map.append("g");
+
+            viewport.append("path")
+                .attr("class", "graticule")
+                .attr("d", path(d3.geoGraticule10()));
+
+            viewport.selectAll(".zip").data(zips.features)
+                .join("path")
+                .attr("class", "zip")
+                .attr('stroke', 'None')
+                .attr("d", path);
+
+            viewport.append("path")
+                .datum(zipsMesh)
+                .attr("class", "zip-outline")
+                .attr("d", path);
+
+
+        }
+        getData()
+    </script>
+</body>
+
 </html>
