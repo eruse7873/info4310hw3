@@ -63,6 +63,41 @@
                 d.LOCATION = JSON.parse(d.location)
             })
             console.log(data);
+
+            var zips = topojson.feature(boston, boston.objects.Boston_Street_Segments);
+            var zipsMesh = topojson.mesh(boston, boston.objects.Boston_Street_Segments);
+
+            var states = topojson.feature(boston, boston.objects.City_of_Boston_Boundary);
+            var stateMesh = topojson.mesh(boston, boston.objects.City_of_Boston_Boundary);
+
+            var projection = d3.geoMercator().fitSize([mapWidth, mapHeight], zips);
+            var path = d3.geoPath().projection(projection);
+
+
+            let viewport = map.append("g");
+
+            viewport.append("path")
+                .attr("class", "graticule")
+                .attr("d", path(d3.geoGraticule10()));
+
+
+            viewport.append("path")
+                .datum(stateMesh)
+                .attr("class", "state-outline")
+                .attr("d", path);
+
+            viewport.selectAll(".zip").data(zips.features)
+                .join("path")
+                .attr("class", "zip")
+                .attr("fill", "None")
+                .attr('stroke', 'None')
+                .attr("d", path);
+
+            viewport.append("path")
+                .datum(zipsMesh)
+                .attr("class", "zip-outline")
+                .attr("d", path);
+
         }
         getData()
     </script>
