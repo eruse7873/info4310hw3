@@ -42,44 +42,57 @@
             stroke-width: .5px;
             fill: none;
         }
-
-        .state-outline {
-            stroke: darkgrey;
-            stroke-width: .5px;
-            fill: green;
-        }
     </style>
+
     <script src="https://d3js.org/d3.v5.min.js"></script>
-    <script src="https://d3js.org/topojson.v3.min.js"></script>
     <div class="container">
         <div class="left_panel">
             <div class="filter">
-                <h1> Filters </h1>
+                <div>
+                    <h1> &#128523 Boston Bites </h1>
+                    <label for="selectDistance">How far will you travel for food?</label>
+
+                    <select name="select" id="selectDistance">
+                        <option value="1" selected>1 mile</option>
+                        <option value="2">2 miles</option>
+                        <option value="3">3 miles</option>
+                        <option value="4">4 miles</option>
+                        <option value="5">5 miles</option>
+                        <option value="all">everywhere in Boston</option>
+                    </select>
+
+                </div>
+
+
+                <div id = filter1>
+                    <div class='filter1child'>
+                        <h2>&#9749</h2>
+                        <h3>Cafes & Bakeries</h3>
+                    </div>
+                    <div class='filter1child'>
+                        <h2>&#129365</h2>
+                        <h3>Markets</h3>
+                    </div>
+                    <div class='filter1child'>
+                        <h2>&#127860</h2>
+                        <h3>Restaurants</h3>
+                    </div>
+                    
+                </div>
+
             </div>
-            <svg id="map" width=1000 height=700></svg>
+
         </div>
-        <div class="list">
-            <h1> List </h1>
-            <svg id="svglist"></svg>
-        </div>
+        <svg id="map"></svg>
+    </div>
+    <div class="list">
+        <h1> List </h1>
+        <svg id="svglist"></svg>
+    </div>
     </div>
     <script>
         const getData = async function () {
-            const svg = d3.select("#map");
-            const width = svg.attr("width");
-            const height = svg.attr("height");
-            const margin = { top: 20, right: 20, bottom: 20, left: 20 };
-            const mapWidth = width - margin.left - margin.right;
-            const mapHeight = height - margin.top - margin.bottom;
-            const map = svg.append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
             let data = await d3.csv("yelp_boston.csv", d3.autotype);
-            const boston = await d3.json("output.json");
-
-            console.log(boston);
-
 
             console.log(d3.map(data, d => d.latitude))
             data.forEach((d) => {
