@@ -9,7 +9,7 @@
             <div class="filter">
                 <div id='header'>
                     <h1> &#128523 Boston Bites </h1>
-                    <label for="selectDistance">How far will you travel for food?</label>
+                    <label for="selectDistance">Distance:</label>
 
                     <select name="select" id="selectDistance">
                         <option value="1" selected>1 mile</option>
@@ -34,15 +34,35 @@
                         <h3>Restaurants</h3>
                     </div>
                 </div>
+                <div id=filter2>
+                    <fieldset>
+                        <legend>Pick your cuisines!</legend>
+                    
+                        <div>
+                          <input type="checkbox" id="thai" name="thai" checked>
+                          <label for="thai">Thai</label>
+                        </div>
+                    
+                        <div>
+                          <input type="checkbox" id="italian" name="italian">
+                          <label for="italian">Italian</label>
+                        </div>
+                    </fieldset>
+                </div>
             </div>
-            <div class = "map">
+
+            <div id=mapContainer>
                 <svg id="map" width=1000 height=700></svg>
             </div>
+
 
         </div>
         <div class="list">
             <h1> List </h1>
-            <svg id="svglist"></svg>
+            <div id = listContainer>
+                <svg id="svglist"></svg>
+            </div>
+            
         </div>
         <script>
             const getData = async function () {
