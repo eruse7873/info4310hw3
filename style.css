@@ -119,10 +119,10 @@ fieldset {
 .state-outline {
     /* stroke: darkgrey; */
     stroke-width: .5px;
-    fill: lightgrey;
+    fill: green;
 }
 
-.list{
-    border-left: .5px solid black;
-
+.map {
+    outline: 2px solid lightgrey;
+    border-radius: 20px;
 }
