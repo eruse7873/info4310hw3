@@ -2,7 +2,7 @@
 
 <body>
     <link rel="stylesheet" href="style.css">
-    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://d3js.org/topojson.v3.min.js"></script>
     <div class="container">
         <div class="left_panel">
@@ -37,15 +37,15 @@
                 <div id=filter2>
                     <fieldset>
                         <legend>Pick your cuisines!</legend>
-                    
+
                         <div>
-                          <input type="checkbox" id="thai" name="thai" checked>
-                          <label for="thai">Thai</label>
+                            <input type="checkbox" id="thai" name="thai" checked>
+                            <label for="thai">Thai</label>
                         </div>
-                    
+
                         <div>
-                          <input type="checkbox" id="italian" name="italian">
-                          <label for="italian">Italian</label>
+                            <input type="checkbox" id="italian" name="italian">
+                            <label for="italian">Italian</label>
                         </div>
                     </fieldset>
                 </div>
@@ -59,10 +59,10 @@
         </div>
         <div class="list">
             <h1> List </h1>
-            <div id = listContainer>
+            <div id=listContainer>
                 <svg id="svglist"></svg>
             </div>
-            
+
         </div>
         <script>
             const getData = async function () {
@@ -137,34 +137,25 @@
                     .attr("cy", d => projection(d.POSITION)[1])
                     .attr("fill", "red");
 
-                var mapZoom = d3.zoom().on("zoom", mapZoomed);
-                console.log(mapZoom);
-
-                map.call(mapZoom);
-
-                function mapZoomed(event) {
-
-                    viewport.attr("transform", event.transform);
-
-                    viewport.select(".zip-outline")
-                        .style("stroke-width", 1 / event.transform.k);
-
-                    viewport.select(".dots")
-                        .attr("r", 1.5 /event.transform.k)
-                }
-
+           
+                
                 // making a brush for the map 
                 // goal is to make a default size for each mile radius (1, 2, 5)
 
                 // appending a g tag to the map for the brush to go
                 let brushGroup = map.append("g").attr("class", "brush");
 
-                // make a brush
-                let brush = d3.brush()
-                    .extent([[0,0], [mapWidth, mapHeight]])
+
+
+                // make a default brush
+                let brush = d3.brushY()
+                    .extent([[0, 0], [mapWidth, mapHeight]])
                     .on("start", startbrush)
                     .on("brush", brushed)
                     .on("end", endbrush);
+
+                // call brush on g tag on map
+                brushGroup.call(brush);
 
                 // brush functions
                 let currentBrush;
@@ -175,20 +166,32 @@
                     }
                 }
 
-                function endbrush( {selection}) {
-                    if (selection === null) {
+                function endbrush() {
+                    if (d3.brushSelection(this) === null) {
                         updatePointAppearance();
                     }
-                    else {}
+                    else { }
                 }
 
-                function brushed({selection}) {
-                    if (selection === null) return; 
+                function brushed() {
+                    if (d3.brushSelection(this) === null) return;
                     updatePointAppearance();
+                    generateRestaurants();
                 }
 
                 // the points that are selected will change color
                 function updatePointAppearance() {
+                    map.selectAll(".dots")
+                        .attr("fill", d => {
+                            if (d3.this()){
+                                return "green";
+                            }
+                            else return "red";
+                        });
+                }
+
+                // function to return the information of the restaurants inside the brush
+                function generateRestaurants(){
 
                 }
 
