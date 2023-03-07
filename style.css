@@ -86,7 +86,7 @@ html {
 
 .zip-outline {
     stroke: lightgrey;
-    stroke-width: .5px;
+    stroke-width: 1px;
     fill: none;
 }
 
@@ -94,4 +94,9 @@ html {
     stroke: darkgrey;
     stroke-width: .5px;
     fill: green;
+}
+
+.map {
+    outline: 2px solid lightgrey;
+    border-radius: 20px;
 }

@@ -7,7 +7,7 @@
     <div class="container">
         <div class="left_panel">
             <div class="filter">
-                <div id = 'header'>
+                <div id='header'>
                     <h1> &#128523 Boston Bites </h1>
                     <label for="selectDistance">How far will you travel for food?</label>
 
@@ -20,7 +20,7 @@
                         <option value="all">everywhere in Boston</option>
                     </select>
                 </div>
-                <div id = filter1>
+                <div id=filter1>
                     <div class='filter1child'>
                         <h2>&#9749</h2>
                         <h3>Cafes & Bakeries</h3>
@@ -33,12 +33,12 @@
                         <h2>&#127860</h2>
                         <h3>Restaurants</h3>
                     </div>
-                    </div>
+                </div>
             </div>
-            <div>
+            <div class = "map">
                 <svg id="map" width=1000 height=700></svg>
             </div>
-     
+
         </div>
         <div class="list">
             <h1> List </h1>
@@ -57,7 +57,7 @@
 
 
                 let data = await d3.csv("yelp_boston.csv", d3.autotype);
-                const boston = await d3.json("output.json");
+                const boston = await d3.json("output-2.json");
 
                 console.log(boston);
 
@@ -109,13 +109,29 @@
                     .attr("d", path);
 
 
-                map.selectAll("circle").data(data)
+                viewport.selectAll("circle").data(data)
                     .join("circle")
+                    .attr("class", "dots")
                     .attr("r", 1.5)
                     .attr("cx", d => projection(d.POSITION)[0])
                     .attr("cy", d => projection(d.POSITION)[1])
                     .attr("fill", "red");
 
+                var mapZoom = d3.zoom().on("zoom", mapZoomed);
+                console.log(mapZoom);
+
+                map.call(mapZoom);
+
+                function mapZoomed(event) {
+
+                    viewport.attr("transform", event.transform);
+
+                    viewport.select(".zip-outline")
+                        .style("stroke-width", 1 / event.transform.k);
+
+                    viewport.select(".dots")
+                        .attr("r", 1.5 /event.transform.k)
+                }
 
             }
             getData()
