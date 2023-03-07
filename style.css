@@ -103,6 +103,8 @@ fieldset {
 #map {
     max-width: 100%;
     max-height: auto;
+    outline: 2px solid lightgrey;
+    border-radius: 20px;
 }
 
 .graticule {
@@ -119,10 +121,5 @@ fieldset {
 .state-outline {
     /* stroke: darkgrey; */
     stroke-width: .5px;
-    fill: green;
-}
-
-#map {
-    outline: 2px solid lightgrey;
-    border-radius: 20px;
+    fill: lightgray;
 }
