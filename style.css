@@ -111,32 +111,18 @@ fieldset {
 }
 
 .zip-outline {
-<<<<<<< HEAD
-    stroke: lightgrey;
-    stroke-width: 1px;
-=======
     stroke: white;
     stroke-width: .5px;
->>>>>>> 6e7584d04ecf089213b1c9a0c3e7d075edc388d2
     fill: none;
 }
 
 .state-outline {
     /* stroke: darkgrey; */
     stroke-width: .5px;
-<<<<<<< HEAD
     fill: green;
 }
 
 .map {
     outline: 2px solid lightgrey;
     border-radius: 20px;
-=======
-    fill: lightgrey;
-}
-
-.list{
-    border-left: .5px solid black;
-
->>>>>>> 6e7584d04ecf089213b1c9a0c3e7d075edc388d2
 }
