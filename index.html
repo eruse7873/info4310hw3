@@ -73,7 +73,7 @@
                 const mapWidth = width - margin.left - margin.right;
                 const mapHeight = height - margin.top - margin.bottom;
                 const viewport = map.append("g")
-                // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
                 let data = await d3.csv("boston_clean.csv", d3.autotype);
@@ -162,7 +162,23 @@
 
                 // var circle = d3.geoCircle().radius(radiusDeg);
 
+                // calculating circle radius
+                // distance between pointA and pointB is 0.5 miles which the average person can walk in 10 minutes
+                pointA = [42.361381268372234, -71.06298917928021]
+                pointB = [42.35936868192185, -71.06992685719246]
 
+
+                pointAxpixel = projection(pointA)[0]
+                pointAypixel = projection(pointA)[1]
+
+                pointBxpixel = projection(pointB)[0]
+                pointBypixel = projection(pointB)[1]
+
+
+                tenminradius = pointAxpixel - pointBxpixel
+                fiveminradius = tenminradius/2
+                twentyminradius = tenminradius * 2
+                thirtyminradius  = tenminradius * 3
 
                 map.on("click", function () {
                     viewport.selectAll("circle.radius_circle").remove();
@@ -180,20 +196,20 @@
 
                     viewport.append("circle")
                         .attr("class", "radius_circle")
-                        .attr("cx", d3.pointer(event)[0])
-                        .attr("cy", d3.pointer(event)[1])
-                        .attr("r", 10)
+                        .attr("cx", d3.pointer(event)[0]-margin.left)
+                        .attr("cy", d3.pointer(event)[1]- margin.bottom)
+                        .attr("r", tenminradius)
                         .on("mousedown", function (event) {
                             event.stopPropagation();
                             console.log('click', d3.pointer(event))
-                            d3.select(this)
-                                .on("mousemove", function (event) {
-                                    event.stopPropagation();
-                                    console.log('move', d3.pointer(event))
-                                    d3.select(this)
-                                        .attr("cx", d3.pointer(event)[0])
-                                        .attr("cy", d3.pointer(event)[1]);
-                                })
+                            // d3.select(this)
+                            //     .on("mousemove", function (event) {
+                            //         event.stopPropagation();
+                            //         console.log('move', d3.pointer(event))
+                            //         d3.select(this)
+                            //             .attr("cx", d3.pointer(event)[0])
+                            //             .attr("cy", d3.pointer(event)[1]);
+                            //     })
                         })
                 })
                 // .call(drag);
