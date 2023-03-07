@@ -76,7 +76,7 @@
                 // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-                let data = await d3.csv("yelp_boston.csv", d3.autotype);
+                let data = await d3.csv("boston_clean.csv", d3.autotype);
                 const boston = await d3.json("output-2.json");
 
                 console.log(boston);
@@ -217,12 +217,17 @@
                 // appending a g tag to the map for the brush to go
                 let brushGroup = map.append("g").attr("class", "brush");
 
-                // make a brush
-                let brush = d3.brush()
+
+
+                // make a default brush
+                let brush = d3.brushY()
                     .extent([[0, 0], [mapWidth, mapHeight]])
                     .on("start", startbrush)
                     .on("brush", brushed)
                     .on("end", endbrush);
+
+                // call brush on g tag on map
+                brushGroup.call(brush);
 
                 // brush functions
                 let currentBrush;
@@ -233,20 +238,32 @@
                     }
                 }
 
-                function endbrush({ selection }) {
-                    if (selection === null) {
+                function endbrush() {
+                    if (d3.brushSelection(this) === null) {
                         updatePointAppearance();
                     }
                     else { }
                 }
 
-                function brushed({ selection }) {
-                    if (selection === null) return;
+                function brushed() {
+                    if (d3.brushSelection(this) === null) return;
                     updatePointAppearance();
+                    generateRestaurants();
                 }
 
                 // the points that are selected will change color
                 function updatePointAppearance() {
+                    map.selectAll(".dots")
+                        .attr("fill", d => {
+                            if (d3.this()){
+                                return "green";
+                            }
+                            else return "red";
+                        });
+                }
+
+                // function to return the information of the restaurants inside the brush
+                function generateRestaurants(){
 
                 }
 
