@@ -153,44 +153,6 @@
                         .attr("r", 1.5 / event.transform.k);
                 }
 
-                // making a brush for the map 
-                // goal is to make a default size for each mile radius (1, 2, 5)
-
-                // appending a g tag to the map for the brush to go
-                let brushGroup = map.append("g").attr("class", "brush");
-
-                // make a brush
-                let brush = d3.brush()
-                    .extent([[0,0], [mapWidth, mapHeight]])
-                    .on("start", startbrush)
-                    .on("brush", brushed)
-                    .on("end", endbrush);
-
-                // brush functions
-                let currentBrush;
-                function startbrush() {
-                    if (currentBrush != this) {
-                        d3.select(currentBrush).call(this.brush.clear);
-                        currentBrush = this;
-                    }
-                }
-
-                function endbrush( {selection}) {
-                    if (selection === null) {
-                        updatePointAppearance();
-                    }
-                    else {}
-                }
-
-                function brushed({selection}) {
-                    if (selection === null) return; 
-                    updatePointAppearance();
-                }
-
-                // the points that are selected will change color
-                function updatePointAppearance() {
-
-                }
 
                 // making a brush for the map 
                 // goal is to make a default size for each mile radius (1, 2, 5)
