@@ -73,7 +73,7 @@
                 const mapWidth = width - margin.left - margin.right;
                 const mapHeight = height - margin.top - margin.bottom;
                 const viewport = map.append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
                 let data = await d3.csv("yelp_boston.csv", d3.autotype);
@@ -129,8 +129,9 @@
                     .attr("d", path);
 
 
-                viewport.selectAll("circle.dots").data(data)
+                viewport.selectAll("circle").data(data)
                     .join("circle")
+                    .attr("class", "dots")
                     .attr("r", 1.5)
                     .attr("cx", d => projection(d.POSITION)[0])
                     .attr("cy", d => projection(d.POSITION)[1])
@@ -149,9 +150,65 @@
                     viewport.select(".zip-outline")
                         .style("stroke-width", 0.5 / event.transform.k);
 
-                    viewport.selectAll("circle")
+                    viewport.selectAll("circle.dots")
                         .attr("r", 1.5 / event.transform.k);
                 }
+
+
+                // var EARTH_RADIUS = 3959;                         // mean radius in miles
+                // var radiusMi = 1;                            // radius to be drawn in miles
+                // var radiusDeg = radiusMi / EARTH_RADIUS * 90; // radius in degrees for circle generator
+
+                // var circle = d3.geoCircle().radius(radiusDeg);
+
+
+
+                map.on("click", function () {
+                    viewport.selectAll("circle.radius_circle").remove();
+
+
+                    // viewport
+                    //     .append("path")
+                    //     .datum(
+                    //         d3
+                    //             .geoCircle()
+                    //             .center([ event.clientX, event.clientY])
+                    //             .radius(radiusDeg)
+                    //             .precision(60)
+                    //     )
+
+                    viewport.append("circle")
+                        .attr("class", "radius_circle")
+                        .attr("cx", event.offsetX)
+                        .attr("cy", event.offsetY)
+                        .attr("r", 10);
+                        // .call(drag);
+
+                });
+
+
+                // function drag() {
+                //     function dragStarted(event, d){
+                //         d3.select(this).raise().attr("stroke", "black");
+                //     }
+
+                //     function dragged(event, d){
+                //         d3.select(this).attr("cx", d.x = event.x).attr("cy", d.y = event.y);
+                //     }
+
+                //     function dragEnded(event, d) {
+                //         d3.select(this).attr("stroke", null);
+                //     }
+
+                //     return d3.drag()
+                //             .on("start", dragStarted)
+                //             .on("drag", dragged)
+                //             .on("end", dragEnded)
+                // }
+
+
+
+
 
 
                 // making a brush for the map 
@@ -162,7 +219,7 @@
 
                 // make a brush
                 let brush = d3.brush()
-                    .extent([[0,0], [mapWidth, mapHeight]])
+                    .extent([[0, 0], [mapWidth, mapHeight]])
                     .on("start", startbrush)
                     .on("brush", brushed)
                     .on("end", endbrush);
@@ -176,15 +233,15 @@
                     }
                 }
 
-                function endbrush( {selection}) {
+                function endbrush({ selection }) {
                     if (selection === null) {
                         updatePointAppearance();
                     }
-                    else {}
+                    else { }
                 }
 
-                function brushed({selection}) {
-                    if (selection === null) return; 
+                function brushed({ selection }) {
+                    if (selection === null) return;
                     updatePointAppearance();
                 }
 
