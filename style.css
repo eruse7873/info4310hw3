@@ -122,7 +122,7 @@ fieldset {
     fill: green;
 }
 
-.map {
+#map {
     outline: 2px solid lightgrey;
     border-radius: 20px;
 }

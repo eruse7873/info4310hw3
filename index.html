@@ -66,13 +66,13 @@
         </div>
         <script>
             const getData = async function () {
-                const svg = d3.select("#map");
-                const width = svg.attr("width");
-                const height = svg.attr("height");
-                const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+                const map = d3.select("svg#map");
+                const width = map.attr("width");
+                const height = map.attr("height");
+                const margin = { top: 30, right: 20, bottom: 30, left: 20 };
                 const mapWidth = width - margin.left - margin.right;
                 const mapHeight = height - margin.top - margin.bottom;
-                const map = svg.append("g")
+                const viewport = map.append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
@@ -104,7 +104,7 @@
                 var path = d3.geoPath().projection(projection);
 
 
-                let viewport = map.append("g");
+                // let viewport = map.append("g");
 
                 viewport.append("path")
                     .attr("class", "graticule")
@@ -129,16 +129,31 @@
                     .attr("d", path);
 
 
-                viewport.selectAll("circle").data(data)
+                viewport.selectAll("circle.dots").data(data)
                     .join("circle")
-                    .attr("class", "dots")
                     .attr("r", 1.5)
                     .attr("cx", d => projection(d.POSITION)[0])
                     .attr("cy", d => projection(d.POSITION)[1])
                     .attr("fill", "red");
 
-           
-                
+                var mapZoom = d3.zoom()
+                    .scaleExtent([1, 20])
+                    .translateExtent([[-50, -50], [mapWidth + 50, mapHeight + 50]])  // to lock to edges
+                    .on("zoom", mapZoomed);
+
+                map.call(mapZoom);
+
+                function mapZoomed(event) {
+                    viewport.attr("transform", event.transform);
+
+                    viewport.select(".zip-outline")
+                        .style("stroke-width", 0.5 / event.transform.k);
+
+                    viewport.selectAll("circle")
+                        .attr("r", 1.5 / event.transform.k);
+                }
+
+
                 // making a brush for the map 
                 // goal is to make a default size for each mile radius (1, 2, 5)
 
@@ -194,6 +209,7 @@
                 function generateRestaurants(){
 
                 }
+
 
             }
             getData()
