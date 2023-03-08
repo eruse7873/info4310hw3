@@ -260,49 +260,12 @@
                 function handleDrag(e) {
                     e.subject.x = e.x;
                     e.subject.y = e.y;
+                    console.log('in handleDrag f')
+                    console.log(e)
                     d3.select(this)
                         .attr("cx", e.subject.x)
-                        .attr("cy", e.subject.y)
-                        .attr('cursor', 'grabbing');
-                    // .call(updateCircleSelection);
-                    updateCircleSelection();
-
-                    // console.log(d3.select(this));
-                    // console.log(d3.select(this)._groups[0][0].isPointInFill());
-
-                    // updateCircleSelection();
-
-
-                    // function updateCircleSelection() {
-
-                    //     let numPoints = 0;
-
-                    //     // Base case - empty path
-                    //     if (pathCoord.length < 1) {
-                    //         circles.attr("fill", d => genreScale(d['Main_Genre']));
-                    //     }
-                    //     // Path has coords in it
-                    //     else {
-                    //         circles.attr("fill", d => {
-                    //             // Use the scales to figure out where the point is
-                    //             // d3 needs it to be in [x,y] format
-                    //             let point = [yearScale(d['year']), grossScale(d['worldwide_gross'] + 1)];
-
-                    //             // d3.polygonContains takes in a polygon as [[x,y],[x,y],[x,y]...]
-                    //             // (Ideally those points go in a counter-clockwise direction, but it should work regardless)
-                    //             // It will test whether a point [x,y] is inside of that polygon
-                    //             if (d3.polygonContains(pathCoord, point)) {
-                    //                 numPoints++;
-                    //                 return "red";
-                    //             }
-                    //             else {
-                    //                 return genreScale(d['Main_Genre']);
-                    //             }
-                    //         });
-                    //     }
-                    //     // because circles.attr "loops" through the points, our numPoints will count up the red circles
-                    //     updatePanelHeader(numPoints)
-                    // }
+                        .attr("cy", e.subject.y);
+                    updateCircleSelection(e.subject.x, e.subject.y);
 
                 }
 
@@ -310,11 +273,6 @@
 
                 viewport.on("click", function (event) {
                     viewport.selectAll("circle.radius_circle").remove();
-
-
-
-
-
 
                     console.log(event);
                     viewport.append("circle")
@@ -327,27 +285,20 @@
                         .attr('cursor', 'grab')
                         .call(drag);
 
-                    updateCircleSelection();
-
-                    // .on("mousedown", function (event) {
-                    //     event.stopPropagation();
-                    //     console.log('click', d3.pointer(event))
-                    //     d3.select(this)
-                    // .on("mousemove", function (event) {
-                    //     event.stopPropagation();
-                    //     console.log('move', d3.pointer(event))
-                    //     d3.select(this)
-                    //         .attr("cx", d3.pointer(event)[0])
-                    //         .attr("cy", d3.pointer(event)[1]);
-                    // })
-                    // })
-
+                    updateCircleSelection(d3.pointer(event)[0],d3.pointer(event)[1]);
 
                 })
                 // These are the dots that are in the circle and should be in the list
                 var selectedPoints = []
                 // Find what restaurants are contained within the circle
-                function updateCircleSelection() {
+                function updateCircleSelection(x, y) {
+                    console.log('updatecircleselection');
+                    console.log(event);
+
+                    x1 = x
+                    y1 = y
+
+                    console.log(x1, y1);
 
                     selectedPoints = [];
 
@@ -355,28 +306,19 @@
 
                         current_circle_radius = viewport.selectAll("circle.radius_circle").attr("r")
 
-                        // loop through all of the points
-                        // find points that have a distance <= r
-                        x1 = d3.pointer(event)[0]
-                        y1 = d3.pointer(event)[1]
-
-                        x2 = d3.select(this).attr("cx")
-                        y2 = d3.select(this).attr("cy")
+                        x2 = projection(d.POSITION)[0]
+                        y2 = projection(d.POSITION)[1]
 
                         dist = Math.sqrt(
                             (x1 - x2) ** 2 +
                             (y1 - y2) ** 2);
 
                         if (dist <= current_circle_radius) {
-                            // console.log(d3.select(this).attr("cx"));
-                            // console.log('true')
                             selectedPoints.push(d);
                         }
 
 
                     })
-                    console.log(selectedPoints);
-                    console.log(selectedPoints.length);
 
                     // call function to generate list of restaurants
                     generateRestaurantList(selectedPoints);
@@ -385,7 +327,7 @@
                 let table = d3.select("#listContainer").append("table");
 
                 function generateRestaurantList(points) {
-                    
+
                     table.selectAll('tr').remove();
                     table.selectAll('td').remove();
 
@@ -398,7 +340,7 @@
                     kvPairs.forEach((d) => {
                         // estelle added link to yelp page, she will figure out hover later
                         row = table.append("tr")
-                        .attr('class','rowR').append('a').attr('href',d[1]['url']).attr('target','_blank');
+                            .attr('class', 'rowR').append('a').attr('href', d[1]['url']).attr('target', '_blank');
                         row.append("strong").text(d[1]['name']);
 
                         ratingrow = row.append("tr");
@@ -411,35 +353,18 @@
 
                         // row.style("background-color", "lightgray");
 
-                        row.on("hover", function (){
-                            
+                        row.on("hover", function () {
+
 
 
                         });
 
                     });
-
-
-
-             
-
-
-
-
-
-
-
-
-
                 }
 
 
 
             };
-
-
-
-
 
             getData()
         </script>
