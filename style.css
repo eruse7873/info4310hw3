@@ -29,6 +29,24 @@ html {
 
 #header{
     margin-right:10px;
+    display: flex;
+    flex-direction: column;
+
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+#header button {
+    font-family:'Franklin Gothic';
+    text-transform: uppercase;
+    width:100px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-right: auto;
+    margin-left: auto;
+
 }
 
 #selectMiles{
@@ -41,7 +59,7 @@ html {
     flex-direction:row;
 }
 
-button {
+#filter1 button {
     /* flex-basis: 90px;
     flex-grow: 0;
     flex-shrink: 0; */
@@ -73,8 +91,23 @@ button:hover {
     pointer-events: none;
 }
 
+/* #header label {
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 25px;
+} */
+
+/* #filter label {
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 25px;
+} */
+
 select#selectDistance {
-    margin-right:10px;
+    /* margin-right:10px; */
+    width: 100px;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 #filter2 {

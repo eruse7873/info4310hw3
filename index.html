@@ -9,16 +9,18 @@
             <div class="filter">
                 <div id='header'>
                     <h1> &#128523 Boston Bites </h1>
-                    <label for="selectDistance">Distance:</label>
+                    <div>
+                        <label for="selectDistance">Distance:</label>
 
-                    <select name="select" id="selectDistance">
-                        <option value="1" selected>1 mile</option>
-                        <option value="2">2 miles</option>
-                        <option value="3">3 miles</option>
-                        <option value="4">4 miles</option>
-                        <option value="5">5 miles</option>
-                        <option value="all">everywhere in Boston</option>
-                    </select>
+                        <select name="select" id="selectDistance">
+                            <option value="1" selected>1 mile</option>
+                            <option value="2">2 miles</option>
+                            <option value="3">3 miles</option>
+                            <option value="4">4 miles</option>
+                            <option value="5">5 miles</option>
+                            <option value="all">everywhere in Boston</option>
+                        </select>
+                    </div>
                 </div>
                 <div id=filter1>
                     <!-- buttons created using d3 -->
@@ -56,6 +58,7 @@
                 let data = await d3.csv("new_boston.csv", d3.autotype);
                 const boston = await d3.json("output-6.json");
 
+
                 // estelle's making buttons for filter1
                 let f1ButtonsData = [];
                 f1Label = ['market', 'cb', 'dd', 'restaurant'];
@@ -74,7 +77,21 @@
                 f1Buttons.append('h2').html(d => d.h2)
                     .append('h3').text(d => d.h3)
 
-                var tryingStuff = null;
+
+
+                // reset button
+                const resetButton = d3.select('div#header')
+                resetButton.append('button').append('text').text("Reset Map").on('click', resetMap);
+
+                function resetMap() {
+                    // viewport.selectAll('circle').remove();
+                    drawPoints(data);
+                    f1Buttons.style('background-color', '#f0f0f0') // reset colors to default
+
+                }
+
+                var tryingStuff = null; // a holder to get a save the filter1 data into a global var
+
                 function filter1() {
                     // a function that filters the dataset based on the buttons in filter1.
                     // 'cb' = cafes, bakeries
@@ -161,18 +178,18 @@
                     if (f2LabelIndex > -1) {
                         checkedLabels.splice(f2LabelIndex, 1);
                     }
-                    
+
                     // filtering the checkbox data
                     // basically estelle couldn't figure out how to filter with a list
                     // so it makes subset using d3.filter for each item in checkedLabels and then concats it
                     moreFilteredData = [];
                     for (let i = 0; i < checkedLabels.length; i++) {
                         checkData = tryingStuff.filter(d => d['filter2'] == checkedLabels[i]);
-                        console.log('checkedLabels',checkedLabels)
-                        console.log('check',checkData)
+                        console.log('checkedLabels', checkedLabels)
+                        console.log('check', checkData)
                         moreFilteredData = moreFilteredData.concat(checkData);
 
-                        console.log('working',moreFilteredData);
+                        console.log('working', moreFilteredData);
 
                         drawPoints(moreFilteredData);
                     }
@@ -284,7 +301,7 @@
                 // resource: https://www.d3indepth.com/interaction/
 
                 viewport.on('hover', function () {
-                    d3.select(this).attr('cursor', 'grab')
+                    d3.select(this).attr('cursor', 'all-scroll')
                 })
 
                 let drag = d3.drag()
@@ -312,7 +329,7 @@
                         .attr("r", tenminradius)
                         .attr("fill", "grey")
                         .attr("opacity", 0.5)
-                        .attr('cursor', 'grab')
+                        .attr('cursor', 'all-scroll')
                         .call(drag);
 
                     updateCircleSelection(d3.pointer(event)[0], d3.pointer(event)[1]);
