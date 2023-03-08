@@ -260,8 +260,6 @@
                 function handleDrag(e) {
                     e.subject.x = e.x;
                     e.subject.y = e.y;
-                    console.log('in handleDrag f')
-                    console.log(e)
                     d3.select(this)
                         .attr("cx", e.subject.x)
                         .attr("cy", e.subject.y);
@@ -274,7 +272,6 @@
                 viewport.on("click", function (event) {
                     viewport.selectAll("circle.radius_circle").remove();
 
-                    console.log(event);
                     viewport.append("circle")
                         .attr("class", "radius_circle")
                         .attr("cx", d3.pointer(event)[0])
@@ -336,11 +333,16 @@
                     delete rowCopy.title;
 
                     let kvPairs = Object.entries(rowCopy);
+                    console.log('kvPairs')
+                    console.log(kvPairs);
 
                     kvPairs.forEach((d) => {
                         // estelle added link to yelp page, she will figure out hover later
                         row = table.append("tr")
-                            .attr('class', 'rowR').append('a').attr('href', d[1]['url']).attr('target', '_blank');
+                            .attr('class', 'rowR')
+                            .append('a')
+                            .attr('href', d[1]['url'])
+                            .attr('target', '_blank');
                         row.append("strong").text(d[1]['name']);
 
                         ratingrow = row.append("tr");
@@ -353,16 +355,21 @@
 
                         // row.style("background-color", "lightgray");
 
-                        row.on("hover", function () {
-
-
-
-                        });
+                        // console.log(table.selectAll('tr'))
+                        table.selectAll('tr').on("mouseover", function(event, d) {
+                            console.log('d')
+                            console.log(d3.select(this));
+                        })
+                        // table.selectAll('.rowr').each(function(d){
+                        //     d.on("mouseover", function() {
+                        //         console.log('hello')
+                        //         console.log(d);
+                        // })
+                             
+                        //      })
 
                     });
                 }
-
-
 
             };
 
