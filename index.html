@@ -9,7 +9,8 @@
             <div class="filter">
                 <div id='header'>
                     <h1> &#128523 Boston Bites </h1>
-                    <label for="selectDistance">Distance:</label>
+                    <div>
+                        <label for="selectDistance">Distance:</label>
 
                     <select name="select" id="selectDistance">
                         <option value="fiveminradius">0.25 miles (5 min walk)</option>
@@ -60,6 +61,7 @@
                 let data = await d3.csv("new_boston.csv", d3.autotype);
                 const boston = await d3.json("output-6.json");
 
+
                 // estelle's making buttons for filter1
                 let f1ButtonsData = [];
                 f1Label = ['market', 'cb', 'dd', 'restaurant'];
@@ -78,7 +80,21 @@
                 f1Buttons.append('h2').html(d => d.h2)
                     .append('h3').text(d => d.h3)
 
-                var tryingStuff = null;
+
+
+                // reset button
+                const resetButton = d3.select('div#header')
+                resetButton.append('button').append('text').text("Reset Map").on('click', resetMap);
+
+                function resetMap() {
+                    // viewport.selectAll('circle').remove();
+                    drawPoints(data);
+                    f1Buttons.style('background-color', '#f0f0f0') // reset colors to default
+
+                }
+
+                var tryingStuff = null; // a holder to get a save the filter1 data into a global var
+
                 function filter1() {
                     // a function that filters the dataset based on the buttons in filter1.
                     // 'cb' = cafes, bakeries
@@ -147,8 +163,6 @@
 
                     f2Label = d3.select(this).datum()
                     f2LabelIndex = checkedLabels.indexOf(f2Label)
-                    console.log(f2Label)
-                    console.log(f2LabelIndex)
                     // check if f2Label is in checkedLabels, add it
                     if (f2LabelIndex === -1) {
                         checkedLabels.push(f2Label);
@@ -157,20 +171,28 @@
                         checkedLabels.splice(f2LabelIndex, 1);
                     }
 
-                    // filtering the checkbox data
-                    // basically estelle couldn't figure out how to filter with a list
-                    // so it makes subset using d3.filter for each item in checkedLabels and then concats it
-                    moreFilteredData = [];
-                    for (let i = 0; i < checkedLabels.length; i++) {
-                        checkData = tryingStuff.filter(d => d['filter2'] == checkedLabels[i]);
-                        console.log('checkedLabels', checkedLabels)
-                        console.log('check', checkData)
-                        moreFilteredData = moreFilteredData.concat(checkData);
-
-                        console.log('working', moreFilteredData);
-
-                        drawPoints(moreFilteredData);
+                    if (checkedLabels.length == 0) {
+                        drawPoints(tryingStuff);
                     }
+
+                    else {
+                        // filtering the checkbox data
+                        // basically estelle couldn't figure out how to filter with a list
+                        // so it makes subset using d3.filter for each item in checkedLabels and then concats it
+                        moreFilteredData = [];
+                        for (let i = 0; i < checkedLabels.length; i++) {
+                            checkData = tryingStuff.filter(d => d['filter2'] == checkedLabels[i]);
+                            console.log('checkedLabels', checkedLabels)
+                            // console.log('check', checkData)
+                            moreFilteredData = moreFilteredData.concat(checkData);
+
+                            // console.log('working', moreFilteredData);
+
+                            drawPoints(moreFilteredData);
+                        }
+                    }
+
+
                 }
 
 
@@ -281,7 +303,7 @@
                 // resource: https://www.d3indepth.com/interaction/
 
                 viewport.on('hover', function () {
-                    d3.select(this).attr('cursor', 'grab')
+                    d3.select(this).attr('cursor', 'all-scroll')
                 })
 
                 let drag = d3.drag()
@@ -317,14 +339,15 @@
                     viewport.selectAll("circle.radius_circle").remove();
 
 
-                    dots = viewport.append("circle")
+
+                dots = viewport.append("circle")
                         .attr("class", "radius_circle")
                         .attr("cx", d3.pointer(event)[0])
                         .attr("cy", d3.pointer(event)[1])
                         .attr("r", selected)
                         .attr("fill", "grey")
                         .attr("opacity", 0.5)
-                        .attr('cursor', 'grab')
+                        .attr('cursor', 'all-scroll')
                         .call(drag);
 
                     updateCircleSelection(d3.pointer(event)[0], d3.pointer(event)[1]);
@@ -334,11 +357,18 @@
                 var selectedPoints = []
                 // Find what restaurants are contained within the circle
                 function updateCircleSelection(x, y) {
+                    // console.log('updatecircleselection');
+                    // console.log(event);
 
                     x1 = x
                     y1 = y
 
-                    highlightedPoints = viewport.selectAll("circle.dots").filter(function (d) {
+                    console.log(x1, y1);
+
+                    selectedPoints = [];
+
+                    viewport.selectAll("circle.dots").each(function (d) {
+
                         current_circle_radius = viewport.selectAll("circle.radius_circle").attr("r")
 
                         x2 = projection(d.POSITION)[0]
@@ -348,27 +378,34 @@
                             (x1 - x2) ** 2 +
                             (y1 - y2) ** 2);
 
-                        return dist <= current_circle_radius;
-                    });
+                        if (dist <= current_circle_radius) {
+                            selectedPoints.push(d);
+                        }
+
+
+                    })
 
                     // call function to generate list of restaurants
-                    generateRestaurantList(highlightedPoints);
-
+                    generateRestaurantList(selectedPoints);
                 }
 
                 let table = d3.select("#listContainer").append("table");
 
-                function generateRestaurantList(circles) {
+                function generateRestaurantList(points) {
 
                     table.selectAll('tr').remove();
                     table.selectAll('td').remove();
 
-                    let kvPairs = Object.assign({}, circles._groups[0]);
+                    let rowCopy = Object.assign({}, points); // shallow copy
+                    let title = rowCopy.title;
+                    delete rowCopy.title;
 
+                    let kvPairs = Object.entries(rowCopy);
+                    console.log('kvPairs')
+                    console.log(kvPairs);
 
-                    previousR = 0;
-
-                    Object.keys(kvPairs).forEach(function (key) {
+                    kvPairs.forEach((d) => {
+                        // estelle added link to yelp page, she will figure out hover later
                         row = table.append("tr")
                             .attr('class', 'rowR')
                             .on("mouseover", function (event) {
@@ -379,17 +416,33 @@
                                 d3.select(kvPairs[key]).attr("r", previousR);
                             })
                             .append('a')
-                            .attr('href', d3.select(kvPairs[key]).datum()['url'])
+                            .attr('href', d[1]['url'])
                             .attr('target', '_blank');
-                        row.append("strong").text(d3.select(kvPairs[key]).datum()['name']);
+                        row.append("strong").text(d[1]['name']);
 
                         ratingrow = row.append("tr");
                         ratingrow.append("td").text("rating:");
-                        ratingrow.append("td").text(d3.select(kvPairs[key]).datum()['rating']);
+                        ratingrow.append("td").text(d[1]['rating']);
 
                         addressrow = row.append("tr");
                         addressrow.append("td").text("address:");
-                        addressrow.append("td").text(d3.select(kvPairs[key]).datum()['LOCATION']['address']);
+                        addressrow.append("td").text(d[1]['LOCATION']['address']);
+
+                        // row.style("background-color", "lightgray");
+
+                        // console.log(table.selectAll('tr'))
+                        table.selectAll('tr').on("mouseover", function (event, d) {
+                            console.log('d')
+                            console.log(d3.select(this));
+                        })
+                        // table.selectAll('.rowr').each(function(d){
+                        //     d.on("mouseover", function() {
+                        //         console.log('hello')
+                        //         console.log(d);
+                        // })
+
+                        //      })
+
                     });
                 }
 
