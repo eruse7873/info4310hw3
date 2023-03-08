@@ -29,13 +29,13 @@
                     <!-- </div> -->
                     <!-- <div class='filter1child'> -->
                         <button>
-                            <h2>&#129365</h2>
+                            <h2>&#129382</h2>
                             <h3>Markets</h3>
                         </button>
                     <!-- </div> -->
                     <!-- <div class='filter1child'> -->
                         <button onclick="filter1('rest')">
-                            <h2>&#127860</h2>
+                            <h2>&#127829</h2>
                             <h3>Restaurants</h3>
                         </button>
                     <!-- </div> -->
@@ -146,7 +146,8 @@
                 viewport.selectAll("circle").data(data)
                     .join("circle")
                     .attr("class", "dots")
-                    .attr("r", 2)
+                    .attr("r", 5)
+                    .attr("opacity",'.3')
                     .attr("cx", d => projection(d.POSITION)[0])
                     .attr("cy", d => projection(d.POSITION)[1])
                     .attr("fill", "red");
@@ -193,7 +194,7 @@
                 viewport.on('hover', function(){
                     d3.select(this).attr('cursor','grab')
                 })
-                
+
                 let drag = d3.drag()
                     .on('drag', handleDrag)
 
