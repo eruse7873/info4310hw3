@@ -74,6 +74,7 @@
                 f1Buttons.append('h2').html(d => d.h2)
                     .append('h3').text(d => d.h3)
 
+                var tryingStuff = null;
                 function filter1() {
                     // a function that filters the dataset based on the buttons in filter1.
                     // 'cb' = cafes, bakeries
@@ -117,22 +118,24 @@
                             // .attr("checked", true)
                             .attr('type', 'checkbox')
                             .attr('id', (d, i) => i)
-                            .on('change', subFilter(filteredData))
+                            .on('change', subFilter)
                         checkboxes.append('label')
                             .attr('for', (d, i) => i)
                             .text(d => d)
 
-                        // moreFilteredData = [];
-                        //     checkedLabels.forEach(d=>{
-                        //         type = d;
-                        //         moreFilteredData.concat(filteredData.filter(d => d['filter2'] == type))})
-                        //     console.log(moreFilteredData)
-
-                        //     drawPoints(moreFilteredData);
-
-
 
                     }
+                    // checkedLabels.forEach(d => {
+                    //     type = d;
+                    //     moreFilteredData.concat(filteredData.filter(i => i['filter2'] == type))
+                    // })
+
+                    // console.log(moreFilteredData)
+
+                    // drawPoints(moreFilteredData);
+
+
+
 
                     // remove checkboxes if others are selected
 
@@ -140,10 +143,12 @@
                         f2div.selectAll('div.checkbox').remove()
                     }
 
-                    return filteredData
+                    tryingStuff = filteredData;
                 }
                 var checkedLabels = []; // list of stuff that is checked
-                function subFilter(filteredData) {
+                function subFilter() {
+
+                    // a function that adds and removes points based on the checkboxes input
 
                     f2Label = d3.select(this).datum()
                     f2LabelIndex = checkedLabels.indexOf(f2Label)
@@ -156,9 +161,21 @@
                     if (f2LabelIndex > -1) {
                         checkedLabels.splice(f2LabelIndex, 1);
                     }
-                    console.log(checkedLabels)
+                    
+                    // filtering the checkbox data
+                    // basically estelle couldn't figure out how to filter with a list
+                    // so it makes subset using d3.filter for each item in checkedLabels and then concats it
+                    moreFilteredData = [];
+                    for (let i = 0; i < checkedLabels.length; i++) {
+                        checkData = tryingStuff.filter(d => d['filter2'] == checkedLabels[i]);
+                        console.log('checkedLabels',checkedLabels)
+                        console.log('check',checkData)
+                        moreFilteredData = moreFilteredData.concat(checkData);
 
-                    drawPoints(filteredData);
+                        console.log('working',moreFilteredData);
+
+                        drawPoints(moreFilteredData);
+                    }
                 }
 
 
@@ -298,6 +315,7 @@
                         .attr('cursor', 'grab')
                         .call(drag);
 
+                    updateCircleSelection(d3.pointer(event)[0], d3.pointer(event)[1]);
                     updateCircleSelection(d3.pointer(event)[0], d3.pointer(event)[1]);
 
                 })
