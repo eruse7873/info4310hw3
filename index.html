@@ -79,7 +79,7 @@
                 const mapWidth = width - margin.left - margin.right;
                 const mapHeight = height - margin.top - margin.bottom;
                 const viewport = map.append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
                 let data = await d3.csv("new_boston.csv", d3.autotype);
@@ -146,7 +146,7 @@
                 viewport.selectAll("circle").data(data)
                     .join("circle")
                     .attr("class", "dots")
-                    .attr("r", 1.5)
+                    .attr("r", 2)
                     .attr("cx", d => projection(d.POSITION)[0])
                     .attr("cy", d => projection(d.POSITION)[1])
                     .attr("fill", "red");
@@ -169,11 +169,6 @@
                 }
 
 
-                // var EARTH_RADIUS = 3959;                         // mean radius in miles
-                // var radiusMi = 1;                            // radius to be drawn in miles
-                // var radiusDeg = radiusMi / EARTH_RADIUS * 90; // radius in degrees for circle generator
-
-                // var circle = d3.geoCircle().radius(radiusDeg);
 
                 // calculating circle radius
                 // distance between pointA and pointB is 0.5 miles which the average person can walk in 10 minutes
@@ -193,122 +188,43 @@
                 twentyminradius = tenminradius * 2
                 thirtyminradius = tenminradius * 3
 
-                map.on("click", function () {
+                // resource: https://www.d3indepth.com/interaction/
+
+                let drag = d3.drag()
+                    .on('drag', handleDrag);
+
+                function handleDrag(e) {
+                    e.subject.x = e.x;
+                    e.subject.y = e.y;
+                    d3.select(this).attr("cx", e.subject.x).attr("cy", e.subject.y);
+                }
+
+                viewport.on("click", function () {
                     viewport.selectAll("circle.radius_circle").remove();
-
-
-                    // viewport
-                    //     .append("path")
-                    //     .datum(
-                    //         d3
-                    //             .geoCircle()
-                    //             .center([ event.clientX, event.clientY])
-                    //             .radius(radiusDeg)
-                    //             .precision(60)
-                    //     )
-
                     viewport.append("circle")
                         .attr("class", "radius_circle")
-                        .attr("cx", d3.pointer(event)[0] - margin.left)
-                        .attr("cy", d3.pointer(event)[1] - margin.bottom)
+                        .attr("cx", d3.pointer(event)[0])
+                        .attr("cy", d3.pointer(event)[1])
                         .attr("r", tenminradius)
-                        .on("mousedown", function (event) {
-                            event.stopPropagation();
-                            console.log('click', d3.pointer(event))
-                            // d3.select(this)
-                            //     .on("mousemove", function (event) {
-                            //         event.stopPropagation();
-                            //         console.log('move', d3.pointer(event))
-                            //         d3.select(this)
-                            //             .attr("cx", d3.pointer(event)[0])
-                            //             .attr("cy", d3.pointer(event)[1]);
-                            //     })
-                        })
+                        .attr("fill", "grey")
+                        .attr("opacity", 0.5)
+                        .call(drag);
+                        // .on("mousedown", function (event) {
+                        //     event.stopPropagation();
+                        //     console.log('click', d3.pointer(event))
+                        //     d3.select(this)
+                            // .on("mousemove", function (event) {
+                            //     event.stopPropagation();
+                            //     console.log('move', d3.pointer(event))
+                            //     d3.select(this)
+                            //         .attr("cx", d3.pointer(event)[0])
+                            //         .attr("cy", d3.pointer(event)[1]);
+                            // })
+                        // })
+                    
+                    
                 })
-                // .call(drag);
-
             };
-
-
-            // function drag() {
-            //     function dragStarted(event, d){
-            //         d3.select(this).raise().attr("stroke", "black");
-            //     }
-
-            //     function dragged(event, d){
-            //         d3.select(this).attr("cx", d.x = event.x).attr("cy", d.y = event.y);
-            //     }
-
-            //     function dragEnded(event, d) {
-            //         d3.select(this).attr("stroke", null);
-            //     }
-
-            //     return d3.drag()
-            //             .on("start", dragStarted)
-            //             .on("drag", dragged)
-            //             .on("end", dragEnded)
-            // }
-
-
-
-
-
-
-            // making a brush for the map 
-            // goal is to make a default size for each mile radius (1, 2, 5)
-
-            // appending a g tag to the map for the brush to go
-            // let brushGroup = map.append("g").attr("class", "brush");
-
-
-
-            // // make a default brush
-            // let brush = d3.brushY()
-            //     .extent([[0, 0], [mapWidth, mapHeight]])
-            //     .on("start", startbrush)
-            //     .on("brush", brushed)
-            //     .on("end", endbrush);
-
-            // // call brush on g tag on map
-            // brushGroup.call(brush);
-
-            // // brush functions
-            // let currentBrush;
-            // function startbrush() {
-            //     if (currentBrush != this) {
-            //         d3.select(currentBrush).call(this.brush.clear);
-            //         currentBrush = this;
-            //     }
-            // }
-
-            // function endbrush() {
-            //     if (d3.brushSelection(this) === null) {
-            //         updatePointAppearance();
-            //     }
-            //     else { }
-            // }
-
-            // function brushed() {
-            //     if (d3.brushSelection(this) === null) return;
-            //     updatePointAppearance();
-            //     generateRestaurants();
-            // }
-
-            // // the points that are selected will change color
-            // function updatePointAppearance() {
-            //     map.selectAll(".dots")
-            //         .attr("fill", d => {
-            //             if (d3.this()){
-            //                 return "green";
-            //             }
-            //             else return "red";
-            //         });
-            // }
-
-            // // function to return the information of the restaurants inside the brush
-            // function generateRestaurants(){
-
-            // }
 
 
 
