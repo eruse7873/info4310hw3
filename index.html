@@ -22,24 +22,25 @@
                 </div>
                 <div id=filter1>
                     <!-- <div class='filter1child'> -->
-                    <button onclick="filter1('cb')">
+                    <button id = 'cb' onclick="filter1('cb')">
                         <h2>&#9749</h2>
                         <h3>Cafes & Bakeries</h3>
-                    </button onclick="filter1('market')">
+                    
+                    </button>
                     <!-- </div> -->
                     <!-- <div class='filter1child'> -->
-                    <button>
+                    <button id = 'market' onclick="filter1('market')">
                         <h2>&#129382</h2>
                         <h3>Markets</h3>
                     </button>
                     <!-- </div> -->
                     <!-- <div class='filter1child'> -->
-                    <button onclick="filter1('dd')">
+                    <button id = 'dd' onclick="filter1('dd')">
                         <h2>&#127863</h2>
                         <h3>Desserts & Drinks</h3>
                     </button>
                     <!-- </div> -->
-                    <button onclick="filter1('rest')">
+                    <button id = 'restaurant' onclick="filter1('restaurant')">
                         <h2>&#127829</h2>
                         <h3>Restaurants</h3>
                     </button>
@@ -47,16 +48,10 @@
                 <div id=filter2>
                     <fieldset>
                         <legend>Pick your cuisines!</legend>
-
-                        <div>
-                            <input type="checkbox" id="thai" name="thai" checked>
-                            <label for="thai">Thai</label>
-                        </div>
-
-                        <div>
-                            <input type="checkbox" id="italian" name="italian">
-                            <label for="italian">Italian</label>
-                        </div>
+                        <input type="checkbox" id="thai" name="thai" checked>
+                        <label for="thai">Thai</label>
+                        <input type="checkbox" id="italian" name="italian">
+                        <label for="italian">Italian</label>
                     </fieldset>
                 </div>
             </div>
@@ -75,6 +70,15 @@
 
         </div>
         <script>
+
+            function filter(type){
+                // helperfunc
+
+                filter1(type);
+
+            }
+            
+            
             const getData = async function () {
                 const map = d3.select("svg#map");
                 const width = map.attr("width");
@@ -90,8 +94,38 @@
                 const boston = await d3.json("output-6.json");
 
                 function filter1(type) {
-                    // a function that uses div id= filter1
+                    // a function that filters the dataset based on the buttons in filter1.
+                    // param: type, a string of the 4 types:
+                    // 'cb' = cafes, bakeries
+                    // 'market' = market
+                    // 'dd' = drinks, desserts
+                    // 'restaurant' = restaurant
+                    // these strings returned by the buttons directly correlate to 'filter1' attr in data.
+                    // returns: filtered data
 
+                    allButtons = d3.selectAll('button')
+                    allButtons.style('background-color','#f0f0f0')
+                    
+                    if (type=='cb'){
+                        button = d3.select('button#cb')
+                        button.style('background-color','lightgray')
+                        console.log(button)
+                    }
+
+                    if (type=='market'){
+                        button = d3.select('button#market')
+                        button.style('background-color','lightgray')
+                    }
+
+                    if (type=='dd'){
+                        button = d3.select('button#dd')
+                        button.style('background-color','lightgray')
+                    }
+
+                    if (type=='restaurant'){
+                        button = d3.select('button#restaurant')
+                        button.style('background-color','lightgray')
+                    }
 
                 }
 
@@ -146,15 +180,17 @@
                     .attr("d", path);
 
 
+                // dot color scale
+                dotColor = d3.scaleOrdinal(['#663300', '#2bda6e', '#cc00ff', '#ff7300']).domain(['cb', 'market', 'dd', 'restaurant'])
 
                 viewport.selectAll("circle").data(data)
                     .join("circle")
                     .attr("class", "dots")
                     .attr("r", 5)
-                    .attr("opacity", '.3')
+                    .attr("opacity", '.5')
                     .attr("cx", d => projection(d.POSITION)[0])
                     .attr("cy", d => projection(d.POSITION)[1])
-                    .attr("fill", "red");
+                    .attr("fill", d => dotColor(d.filter1));
 
                 var mapZoom = d3.zoom()
                     .scaleExtent([1, 20])
@@ -209,7 +245,7 @@
                         .attr("cx", e.subject.x)
                         .attr("cy", e.subject.y)
                         .attr('cursor', 'grabbing');
-                        // .call(updateCircleSelection);
+                    // .call(updateCircleSelection);
                     updateCircleSelection();
 
                     // console.log(d3.select(this));
@@ -297,7 +333,7 @@
                     selectedPoints = [];
 
                     viewport.selectAll("circle.dots").each(function (d) {
-                        
+
                         current_circle_radius = viewport.selectAll("circle.radius_circle").attr("r")
 
                         // loop through all of the points

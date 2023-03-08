@@ -28,7 +28,7 @@ html {
 }
 
 #header{
-    margin-right:5%;
+    margin-right:10px;
 }
 
 #selectMiles{
@@ -51,6 +51,7 @@ button {
     border-radius: 15px;
     padding:1%;
     margin:2%;
+    background-color: #f0f0f0;
 }
 
 button:hover {
