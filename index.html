@@ -385,6 +385,9 @@
                 let table = d3.select(".list").append("table");
 
                 function generateRestaurantList(points) {
+                    
+                    table.selectAll('tr').remove();
+                    table.selectAll('td').remove();
 
                     let rowCopy = Object.assign({}, points); // shallow copy
                     let title = rowCopy.title;
