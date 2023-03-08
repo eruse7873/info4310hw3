@@ -321,8 +321,25 @@
 
                     })
                     console.log(selectedPoints);
+                    console.log(selectedPoints.length);
+
+                    // call function to generate list of restaurants
+                    generateRestaurantList(selectedPoints);
                 }
-                // console.log(selectedPoints);
+
+                let table = d3.select("#list").append("table");
+
+                function generateRestaurantList(restaurants) {
+                    let rowCopy = Object.assign({},restaurants); // shallow copy
+                    let title = rowCopy.title;
+                    delete rowCopy.title;
+                    
+                    let kvPairs = Object.entries(rowCopy);
+                    console.log(kvPairs);
+
+                    let
+                }
+          
                 
 
             };
