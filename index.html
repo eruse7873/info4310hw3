@@ -94,9 +94,9 @@
 
                     const f2div = d3.select('div#filter2')
                     if (f1Type == 'restaurant' || f1Type == 'dd') {
-          
+
                         checkedLabels = [] // reset global variable filters 
-                        
+
                         const filter2 = [...new Set(d3.map(filteredData, d => d.filter2))];
                         console.log(filter2)
                         // f2div.append('legend').text('more stuff')
@@ -124,8 +124,8 @@
 
                     // remove checkboxes if others are selected
 
-                    if (f1Type == 'cb' || f1Type == 'market')  {
-                        f2div.selectAll('div.checkbox').remove() 
+                    if (f1Type == 'cb' || f1Type == 'market') {
+                        f2div.selectAll('div.checkbox').remove()
                     }
 
                     return filteredData
@@ -385,24 +385,16 @@
                 let table = d3.select(".list").append("table");
 
                 function generateRestaurantList(points) {
+
                     let rowCopy = Object.assign({}, points); // shallow copy
                     let title = rowCopy.title;
                     delete rowCopy.title;
 
                     let kvPairs = Object.entries(rowCopy);
 
-                    console.log('kvp')
-                    console.log(kvPairs);
-
-
                     kvPairs.forEach((d) => {
-                        console.log('here');
-                        console.log(d);
-                        console.log(d[1]['name']);
 
-                        
-                        
-                        row = table.append("tr")
+                        row = table.append("tr");
                         row.append("strong").text(d[1]['name']);
 
                         ratingrow = row.append("tr");
@@ -413,7 +405,19 @@
                         addressrow.append("td").text("address:");
                         addressrow.append("td").text(d[1]['LOCATION']['address']);
 
+                        row.style("background-color", "lightgray");
+
+                        row.on("hover", function (){
+                            
+
+
+                        });
+
                     });
+
+
+
+             
 
 
 
