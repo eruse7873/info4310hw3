@@ -36,16 +36,22 @@ html {
 }
 
 #filter1{
+    width:fit-content;
     display:flex;
     flex-direction:row;
 }
 
-.filter1child{
-    width: 33%;
+#filter1 button {
+    flex-basis: 90px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    width:90px;
+    height: 110px;
     border: .5px solid black;
     border-radius: 15px;
     padding:1%;
     margin:2%;
+    
 }
 
 #filter1 h2{
