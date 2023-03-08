@@ -21,18 +21,24 @@
                     </select>
                 </div>
                 <div id=filter1>
-                    <div class='filter1child'>
-                        <h2>&#9749</h2>
-                        <h3>Cafes & Bakeries</h3>
-                    </div>
-                    <div class='filter1child'>
-                        <h2>&#129365</h2>
-                        <h3>Markets</h3>
-                    </div>
-                    <div class='filter1child'>
-                        <h2>&#127860</h2>
-                        <h3>Restaurants</h3>
-                    </div>
+                    <!-- <div class='filter1child'> -->
+                        <button onclick="filter1('cb')">
+                            <h2>&#9749</h2>
+                            <h3>Cafes & Bakeries</h3>
+                        </button onclick="filter1('market')">
+                    <!-- </div> -->
+                    <!-- <div class='filter1child'> -->
+                        <button>
+                            <h2>&#129365</h2>
+                            <h3>Markets</h3>
+                        </button>
+                    <!-- </div> -->
+                    <!-- <div class='filter1child'> -->
+                        <button onclick="filter1('rest')">
+                            <h2>&#127860</h2>
+                            <h3>Restaurants</h3>
+                        </button>
+                    <!-- </div> -->
                 </div>
                 <div id=filter2>
                     <fieldset>
@@ -73,11 +79,18 @@
                 const mapWidth = width - margin.left - margin.right;
                 const mapHeight = height - margin.top - margin.bottom;
                 const viewport = map.append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
                 let data = await d3.csv("new_boston.csv", d3.autotype);
                 const boston = await d3.json("output-6.json");
+
+                function filter1(type) {
+                    // a function that uses div id= filter1
+
+
+                }
+
 
                 console.log(boston);
 
