@@ -26,8 +26,16 @@
                         <h2>&#9749</h2>
                         <h3>Cafes & Bakeries</h3>
                     </button onclick="filter1('market')">
+                    <button onclick="filter1('cb')">
+                        <h2>&#9749</h2>
+                        <h3>Cafes & Bakeries</h3>
+                    </button onclick="filter1('market')">
                     <!-- </div> -->
                     <!-- <div class='filter1child'> -->
+                    <button>
+                        <h2>&#129382</h2>
+                        <h3>Markets</h3>
+                    </button>
                     <button>
                         <h2>&#129382</h2>
                         <h3>Markets</h3>
@@ -169,8 +177,8 @@
                     viewport.select(".zip-outline")
                         .style("stroke-width", 0.5 / event.transform.k);
 
-                    // viewport.selectAll("circle.dots")
-                    //     .attr("r", 1.5 / event.transform.k);
+                    viewport.selectAll("circle.dots")
+                        .attr("r", 5 / event.transform.k);
                 }
 
 
@@ -205,14 +213,63 @@
                 function handleDrag(e) {
                     e.subject.x = e.x;
                     e.subject.y = e.y;
-                    d3.select(this).attr("cx", e.subject.x).attr("cy", e.subject.y)
+                    d3.select(this)
+                        .attr("cx", e.subject.x)
+                        .attr("cy", e.subject.y)
                         .attr('cursor', 'grabbing');
+                        // .call(updateCircleSelection);
+                    updateCircleSelection();
+
+                    // console.log(d3.select(this));
+                    // console.log(d3.select(this)._groups[0][0].isPointInFill());
+
+                    // updateCircleSelection();
+
+
+                    // function updateCircleSelection() {
+
+                    //     let numPoints = 0;
+
+                    //     // Base case - empty path
+                    //     if (pathCoord.length < 1) {
+                    //         circles.attr("fill", d => genreScale(d['Main_Genre']));
+                    //     }
+                    //     // Path has coords in it
+                    //     else {
+                    //         circles.attr("fill", d => {
+                    //             // Use the scales to figure out where the point is
+                    //             // d3 needs it to be in [x,y] format
+                    //             let point = [yearScale(d['year']), grossScale(d['worldwide_gross'] + 1)];
+
+                    //             // d3.polygonContains takes in a polygon as [[x,y],[x,y],[x,y]...]
+                    //             // (Ideally those points go in a counter-clockwise direction, but it should work regardless)
+                    //             // It will test whether a point [x,y] is inside of that polygon
+                    //             if (d3.polygonContains(pathCoord, point)) {
+                    //                 numPoints++;
+                    //                 return "red";
+                    //             }
+                    //             else {
+                    //                 return genreScale(d['Main_Genre']);
+                    //             }
+                    //         });
+                    //     }
+                    //     // because circles.attr "loops" through the points, our numPoints will count up the red circles
+                    //     updatePanelHeader(numPoints)
+                    // }
+
                 }
 
 
 
-                viewport.on("click", function () {
+                viewport.on("click", function (event) {
                     viewport.selectAll("circle.radius_circle").remove();
+
+
+
+
+
+
+                    console.log(event);
                     viewport.append("circle")
                         .attr("class", "radius_circle")
                         .attr("cx", d3.pointer(event)[0])
@@ -222,6 +279,9 @@
                         .attr("opacity", 0.5)
                         .attr('cursor', 'grab')
                         .call(drag);
+
+                    updateCircleSelection();
+
                     // .on("mousedown", function (event) {
                     //     event.stopPropagation();
                     //     console.log('click', d3.pointer(event))
@@ -237,11 +297,45 @@
 
 
                 })
-
+                // These are the dots that are in the circle and should be in the list
+                var selectedPoints = []
                 // Find what restaurants are contained within the circle
-                console.log(viewport.selectAll("circle.radius_circle"));
+                function updateCircleSelection() {
+
+                    selectedPoints = [];
+
+                    viewport.selectAll("circle.dots").each(function (d) {
+                        
+                        current_circle_radius = viewport.selectAll("circle.radius_circle").attr("r")
+
+                        // loop through all of the points
+                        // find points that have a distance <= r
+                        x1 = d3.pointer(event)[0]
+                        y1 = d3.pointer(event)[1]
+
+                        x2 = d3.select(this).attr("cx")
+                        y2 = d3.select(this).attr("cy")
+
+                        dist = Math.sqrt(
+                            (x1 - x2) ** 2 +
+                            (y1 - y2) ** 2);
+
+                        if (dist <= current_circle_radius) {
+                            // console.log(d3.select(this).attr("cx"));
+                            // console.log('true')
+                            selectedPoints.push(d);
+                        }
+
+
+                    })
+                    console.log(selectedPoints);
+                }
+                // console.log(selectedPoints);
+                
 
             };
+
+
 
 
 
