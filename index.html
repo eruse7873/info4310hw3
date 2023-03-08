@@ -22,23 +22,27 @@
                 </div>
                 <div id=filter1>
                     <!-- <div class='filter1child'> -->
-                        <button onclick="filter1('cb')">
-                            <h2>&#9749</h2>
-                            <h3>Cafes & Bakeries</h3>
-                        </button onclick="filter1('market')">
+                    <button onclick="filter1('cb')">
+                        <h2>&#9749</h2>
+                        <h3>Cafes & Bakeries</h3>
+                    </button onclick="filter1('market')">
                     <!-- </div> -->
                     <!-- <div class='filter1child'> -->
-                        <button>
-                            <h2>&#129382</h2>
-                            <h3>Markets</h3>
-                        </button>
+                    <button>
+                        <h2>&#129382</h2>
+                        <h3>Markets</h3>
+                    </button>
                     <!-- </div> -->
                     <!-- <div class='filter1child'> -->
-                        <button onclick="filter1('rest')">
-                            <h2>&#127829</h2>
-                            <h3>Restaurants</h3>
-                        </button>
+                    <button onclick="filter1('dd')">
+                        <h2>&#127863</h2>
+                        <h3>Desserts & Drinks</h3>
+                    </button>
                     <!-- </div> -->
+                    <button onclick="filter1('rest')">
+                        <h2>&#127829</h2>
+                        <h3>Restaurants</h3>
+                    </button>
                 </div>
                 <div id=filter2>
                     <fieldset>
@@ -79,7 +83,7 @@
                 const mapWidth = width - margin.left - margin.right;
                 const mapHeight = height - margin.top - margin.bottom;
                 const viewport = map.append("g")
-                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
                 let data = await d3.csv("new_boston.csv", d3.autotype);
@@ -147,7 +151,7 @@
                     .join("circle")
                     .attr("class", "dots")
                     .attr("r", 5)
-                    .attr("opacity",'.3')
+                    .attr("opacity", '.3')
                     .attr("cx", d => projection(d.POSITION)[0])
                     .attr("cy", d => projection(d.POSITION)[1])
                     .attr("fill", "red");
@@ -191,8 +195,8 @@
 
                 // resource: https://www.d3indepth.com/interaction/
 
-                viewport.on('hover', function(){
-                    d3.select(this).attr('cursor','grab')
+                viewport.on('hover', function () {
+                    d3.select(this).attr('cursor', 'grab')
                 })
 
                 let drag = d3.drag()
@@ -202,10 +206,10 @@
                     e.subject.x = e.x;
                     e.subject.y = e.y;
                     d3.select(this).attr("cx", e.subject.x).attr("cy", e.subject.y)
-                    .attr('cursor','grabbing');
+                        .attr('cursor', 'grabbing');
                 }
 
-          
+
 
                 viewport.on("click", function () {
                     viewport.selectAll("circle.radius_circle").remove();
@@ -216,22 +220,22 @@
                         .attr("r", tenminradius)
                         .attr("fill", "grey")
                         .attr("opacity", 0.5)
-                        .attr('cursor','grab')
+                        .attr('cursor', 'grab')
                         .call(drag);
-                        // .on("mousedown", function (event) {
-                        //     event.stopPropagation();
-                        //     console.log('click', d3.pointer(event))
-                        //     d3.select(this)
-                            // .on("mousemove", function (event) {
-                            //     event.stopPropagation();
-                            //     console.log('move', d3.pointer(event))
-                            //     d3.select(this)
-                            //         .attr("cx", d3.pointer(event)[0])
-                            //         .attr("cy", d3.pointer(event)[1]);
-                            // })
-                        // })
-                    
-                    
+                    // .on("mousedown", function (event) {
+                    //     event.stopPropagation();
+                    //     console.log('click', d3.pointer(event))
+                    //     d3.select(this)
+                    // .on("mousemove", function (event) {
+                    //     event.stopPropagation();
+                    //     console.log('move', d3.pointer(event))
+                    //     d3.select(this)
+                    //         .attr("cx", d3.pointer(event)[0])
+                    //         .attr("cy", d3.pointer(event)[1]);
+                    // })
+                    // })
+
+
                 })
 
                 // Find what restaurants are contained within the circle
