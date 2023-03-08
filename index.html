@@ -190,14 +190,21 @@
 
                 // resource: https://www.d3indepth.com/interaction/
 
+                viewport.on('hover', function(){
+                    d3.select(this).attr('cursor','grab')
+                })
+                
                 let drag = d3.drag()
-                    .on('drag', handleDrag);
+                    .on('drag', handleDrag)
 
                 function handleDrag(e) {
                     e.subject.x = e.x;
                     e.subject.y = e.y;
-                    d3.select(this).attr("cx", e.subject.x).attr("cy", e.subject.y);
+                    d3.select(this).attr("cx", e.subject.x).attr("cy", e.subject.y)
+                    .attr('cursor','grabbing');
                 }
+
+          
 
                 viewport.on("click", function () {
                     viewport.selectAll("circle.radius_circle").remove();
@@ -208,6 +215,7 @@
                         .attr("r", tenminradius)
                         .attr("fill", "grey")
                         .attr("opacity", 0.5)
+                        .attr('cursor','grab')
                         .call(drag);
                         // .on("mousedown", function (event) {
                         //     event.stopPropagation();
