@@ -117,19 +117,18 @@
                             // .attr("checked", true)
                             .attr('type', 'checkbox')
                             .attr('id', (d, i) => i)
-                            .on('change', subFilter())
+                            .on('change', subFilter(filteredData))
                         checkboxes.append('label')
                             .attr('for', (d, i) => i)
                             .text(d => d)
+                        
+                            // moreFilteredData = [];
+                    //     checkedLabels.forEach(d=>{
+                    //         type = d;
+                    //         moreFilteredData.concat(filteredData.filter(d => d['filter2'] == type))})
+                    //     console.log(moreFilteredData)
 
-                        //filter filteredData by checkedLabels
-
-                        //check if d['filter2'] is in a list
-
-                        // morefilteredData = filteredData.filter(function(d){
-                        //     if (checkedLabels.includes(d['filter2'])) {
-                        //         return d;
-                        //     }
+                    //     drawPoints(moreFilteredData);
                       
                              
                         
@@ -144,7 +143,7 @@
                     return filteredData
                 }
                 var checkedLabels = []; // list of stuff that is checked
-                function subFilter() {
+                function subFilter(filteredData) {
 
                     f2Label = d3.select(this).datum()
                     f2LabelIndex = checkedLabels.indexOf(f2Label)
@@ -157,14 +156,9 @@
                     if (f2LabelIndex > -1) {
                         checkedLabels.splice(f2LabelIndex, 1);
                     }
-                    // console.log(checkedLabels)
-                    // moreFilteredData = [];
-                    //     checkedLabels.forEach(d=>{
-                    //         type = d;
-                    //         moreFilteredData.concat(filteredData.filter(d => d['filter2'] == type))})
-                    //     console.log(moreFilteredData)
+                    console.log(checkedLabels)
 
-                    //     drawPoints(moreFilteredData);
+                    drawPoints(filteredData);
                 }
 
 
