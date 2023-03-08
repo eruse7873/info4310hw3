@@ -141,3 +141,18 @@ fieldset {
     stroke-width: .5px;
     fill: lightgray;
 }
+
+.rowR{
+    background-color:lightgray;
+    margin:2px;
+}
+
+.rowR a {
+    /* background-color: lightgray; */
+    text-decoration: none; 
+}
+
+#listContainer {
+    overflow-y: auto;
+    height:700px;
+}

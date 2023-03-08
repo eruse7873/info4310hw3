@@ -382,7 +382,7 @@
                     generateRestaurantList(selectedPoints);
                 }
 
-                let table = d3.select(".list").append("table");
+                let table = d3.select("#listContainer").append("table");
 
                 function generateRestaurantList(points) {
                     
@@ -396,8 +396,9 @@
                     let kvPairs = Object.entries(rowCopy);
 
                     kvPairs.forEach((d) => {
-
-                        row = table.append("tr");
+                        // estelle added link to yelp page, she will figure out hover later
+                        row = table.append("tr")
+                        .attr('class','rowR').append('a').attr('href',d[1]['url']).attr('target','_blank');
                         row.append("strong").text(d[1]['name']);
 
                         ratingrow = row.append("tr");
@@ -408,7 +409,7 @@
                         addressrow.append("td").text("address:");
                         addressrow.append("td").text(d[1]['LOCATION']['address']);
 
-                        row.style("background-color", "lightgray");
+                        // row.style("background-color", "lightgray");
 
                         row.on("hover", function (){
                             
