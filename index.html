@@ -22,25 +22,25 @@
                 </div>
                 <div id=filter1>
                     <!-- <div class='filter1child'> -->
-                    <button id = 'cb' onclick="filter1('cb')">
+                    <button id='cb' onclick="filter1('cb')">
                         <h2>&#9749</h2>
                         <h3>Cafes & Bakeries</h3>
-                    
+
                     </button>
                     <!-- </div> -->
                     <!-- <div class='filter1child'> -->
-                    <button id = 'market' onclick="filter1('market')">
+                    <button id='market' onclick="filter1('market')">
                         <h2>&#129382</h2>
                         <h3>Markets</h3>
                     </button>
                     <!-- </div> -->
                     <!-- <div class='filter1child'> -->
-                    <button id = 'dd' onclick="filter1('dd')">
+                    <button id='dd' onclick="filter1('dd')">
                         <h2>&#127863</h2>
                         <h3>Desserts & Drinks</h3>
                     </button>
                     <!-- </div> -->
-                    <button id = 'restaurant' onclick="filter1('restaurant')">
+                    <button id='restaurant' onclick="filter1('restaurant')">
                         <h2>&#127829</h2>
                         <h3>Restaurants</h3>
                     </button>
@@ -71,14 +71,14 @@
         </div>
         <script>
 
-            function filter(type){
+            function filter(type) {
                 // helperfunc
 
                 filter1(type);
 
             }
-            
-            
+
+
             const getData = async function () {
                 const map = d3.select("svg#map");
                 const width = map.attr("width");
@@ -104,27 +104,27 @@
                     // returns: filtered data
 
                     allButtons = d3.selectAll('button')
-                    allButtons.style('background-color','#f0f0f0')
-                    
-                    if (type=='cb'){
+                    allButtons.style('background-color', '#f0f0f0')
+
+                    if (type == 'cb') {
                         button = d3.select('button#cb')
-                        button.style('background-color','lightgray')
+                        button.style('background-color', 'lightgray')
                         console.log(button)
                     }
 
-                    if (type=='market'){
+                    if (type == 'market') {
                         button = d3.select('button#market')
-                        button.style('background-color','lightgray')
+                        button.style('background-color', 'lightgray')
                     }
 
-                    if (type=='dd'){
+                    if (type == 'dd') {
                         button = d3.select('button#dd')
-                        button.style('background-color','lightgray')
+                        button.style('background-color', 'lightgray')
                     }
 
-                    if (type=='restaurant'){
+                    if (type == 'restaurant') {
                         button = d3.select('button#restaurant')
-                        button.style('background-color','lightgray')
+                        button.style('background-color', 'lightgray')
                     }
 
                 }
@@ -366,17 +366,22 @@
                 let table = d3.select("#list").append("table");
 
                 function generateRestaurantList(restaurants) {
-                    let rowCopy = Object.assign({},restaurants); // shallow copy
+                    let rowCopy = Object.assign({}, restaurants); // shallow copy
                     let title = rowCopy.title;
                     delete rowCopy.title;
-                    
+
                     let kvPairs = Object.entries(rowCopy);
                     console.log(kvPairs);
 
-                    let
+                    let rows = table.selectAll("tr").data(kvPairs)
+                        .join(enter => enter.append("tr"),
+                            update => update.selectAll("td").remove(),
+                            exit => exit.remove());
+
+                    rows.append("td").append("strong").text(d => d[0]);
                 }
-          
-                
+
+
 
             };
 
