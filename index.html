@@ -12,14 +12,18 @@
                     <label for="selectDistance">Distance:</label>
 
                     <select name="select" id="selectDistance">
-                        <option value="1" selected>1 mile</option>
-                        <option value="2">2 miles</option>
-                        <option value="3">3 miles</option>
-                        <option value="4">4 miles</option>
-                        <option value="5">5 miles</option>
-                        <option value="all">everywhere in Boston</option>
+                        <option value="fiveminradius">0.25 miles (5 min walk)</option>
+                        <option value selected="tenminradius">0.5 miles (10 min walk)</option>
+                        <option value="twentyminradius">1 mile (20 min walk)</option>
+                        <option value="thirtyminradius">1.5 miles (30 min walk)</option>
                     </select>
                 </div>
+
+
+                <!--                 tenminradius = pointAxpixel - pointBxpixel
+                fiveminradius = tenminradius / 2
+                twentyminradius = tenminradius * 2
+                thirtyminradius = tenminradius * 3 -->
                 <div id=filter1>
                     <!-- buttons created using d3 -->
                 </div>
@@ -125,15 +129,6 @@
 
 
                     }
-                    // checkedLabels.forEach(d => {
-                    //     type = d;
-                    //     moreFilteredData.concat(filteredData.filter(i => i['filter2'] == type))
-                    // })
-
-                    // console.log(moreFilteredData)
-
-                    // drawPoints(moreFilteredData);
-
 
 
 
@@ -161,18 +156,18 @@
                     if (f2LabelIndex > -1) {
                         checkedLabels.splice(f2LabelIndex, 1);
                     }
-                    
+
                     // filtering the checkbox data
                     // basically estelle couldn't figure out how to filter with a list
                     // so it makes subset using d3.filter for each item in checkedLabels and then concats it
                     moreFilteredData = [];
                     for (let i = 0; i < checkedLabels.length; i++) {
                         checkData = tryingStuff.filter(d => d['filter2'] == checkedLabels[i]);
-                        console.log('checkedLabels',checkedLabels)
-                        console.log('check',checkData)
+                        console.log('checkedLabels', checkedLabels)
+                        console.log('check', checkData)
                         moreFilteredData = moreFilteredData.concat(checkData);
 
-                        console.log('working',moreFilteredData);
+                        console.log('working', moreFilteredData);
 
                         drawPoints(moreFilteredData);
                     }
@@ -281,6 +276,8 @@
                 twentyminradius = tenminradius * 2
                 thirtyminradius = tenminradius * 3
 
+
+
                 // resource: https://www.d3indepth.com/interaction/
 
                 viewport.on('hover', function () {
@@ -299,23 +296,37 @@
                     updateCircleSelection(e.subject.x, e.subject.y);
 
                 }
+                var selected = tenminradius;
+
+                d3.select('select').on("change", function () {
+                        selected = d3.select("#selectDistance").node().value;
+                        console.log('selected')
+                        console.log(selected);
+                    if (selected === "fiveminradius") {selected =  fiveminradius}
+                    if (selected === "tenminradius") {selected =  tenminradius}
+                    if (selected === "twentyminradius") {selected =  twentyminradius}
+                    if (selected === "thirtyminradius") {selected =  thirtyminradius}
+                    
+                    viewport.selectAll("circle.radius_circle").attr("r", selected);
+
+                    })
 
 
 
                 viewport.on("click", function (event) {
                     viewport.selectAll("circle.radius_circle").remove();
 
+
                     dots = viewport.append("circle")
                         .attr("class", "radius_circle")
                         .attr("cx", d3.pointer(event)[0])
                         .attr("cy", d3.pointer(event)[1])
-                        .attr("r", tenminradius)
+                        .attr("r", selected)
                         .attr("fill", "grey")
                         .attr("opacity", 0.5)
                         .attr('cursor', 'grab')
                         .call(drag);
 
-                    updateCircleSelection(d3.pointer(event)[0], d3.pointer(event)[1]);
                     updateCircleSelection(d3.pointer(event)[0], d3.pointer(event)[1]);
 
                 })
@@ -360,12 +371,13 @@
                     Object.keys(kvPairs).forEach(function (key) {
                         row = table.append("tr")
                             .attr('class', 'rowR')
-                            .on("mouseover", function(event){
+                            .on("mouseover", function (event) {
                                 previousR = d3.select(kvPairs[key]).attr("r")
                                 d3.select(kvPairs[key]).attr("r", previousR * 2);
                             })
-                            .on("mouseout", function(event){
-                                d3.select(kvPairs[key]).attr("r", previousR);})
+                            .on("mouseout", function (event) {
+                                d3.select(kvPairs[key]).attr("r", previousR);
+                            })
                             .append('a')
                             .attr('href', d3.select(kvPairs[key]).datum()['url'])
                             .attr('target', '_blank');
