@@ -322,7 +322,7 @@
                 viewport.on("click", function (event) {
                     viewport.selectAll("circle.radius_circle").remove();
 
-                    viewport.append("circle")
+                    dots = viewport.append("circle")
                         .attr("class", "radius_circle")
                         .attr("cx", d3.pointer(event)[0])
                         .attr("cy", d3.pointer(event)[1])
@@ -333,24 +333,18 @@
                         .call(drag);
 
                     updateCircleSelection(d3.pointer(event)[0], d3.pointer(event)[1]);
+                    updateCircleSelection(d3.pointer(event)[0], d3.pointer(event)[1]);
 
                 })
                 // These are the dots that are in the circle and should be in the list
                 var selectedPoints = []
                 // Find what restaurants are contained within the circle
                 function updateCircleSelection(x, y) {
-                    // console.log('updatecircleselection');
-                    // console.log(event);
 
                     x1 = x
                     y1 = y
 
-                    console.log(x1, y1);
-
-                    selectedPoints = [];
-
-                    viewport.selectAll("circle.dots").each(function (d) {
-
+                    highlightedPoints = viewport.selectAll("circle.dots").filter(function (d) {
                         current_circle_radius = viewport.selectAll("circle.radius_circle").attr("r")
 
                         x2 = projection(d.POSITION)[0]
@@ -360,64 +354,47 @@
                             (x1 - x2) ** 2 +
                             (y1 - y2) ** 2);
 
-                        if (dist <= current_circle_radius) {
-                            selectedPoints.push(d);
-                        }
-
-
-                    })
+                        return dist <= current_circle_radius;
+                    });
 
                     // call function to generate list of restaurants
-                    generateRestaurantList(selectedPoints);
+                    generateRestaurantList(highlightedPoints);
+
                 }
 
                 let table = d3.select("#listContainer").append("table");
 
-                function generateRestaurantList(points) {
+                function generateRestaurantList(circles) {
 
                     table.selectAll('tr').remove();
                     table.selectAll('td').remove();
 
-                    let rowCopy = Object.assign({}, points); // shallow copy
-                    let title = rowCopy.title;
-                    delete rowCopy.title;
+                    let kvPairs = Object.assign({}, circles._groups[0]);
 
-                    let kvPairs = Object.entries(rowCopy);
-                    console.log('kvPairs')
-                    console.log(kvPairs);
 
-                    kvPairs.forEach((d) => {
-                        // estelle added link to yelp page, she will figure out hover later
+                    previousR = 0;
+
+                    Object.keys(kvPairs).forEach(function (key) {
                         row = table.append("tr")
                             .attr('class', 'rowR')
+                            .on("mouseover", function(event){
+                                previousR = d3.select(kvPairs[key]).attr("r")
+                                d3.select(kvPairs[key]).attr("r", previousR * 2);
+                            })
+                            .on("mouseout", function(event){
+                                d3.select(kvPairs[key]).attr("r", previousR);})
                             .append('a')
-                            .attr('href', d[1]['url'])
+                            .attr('href', d3.select(kvPairs[key]).datum()['url'])
                             .attr('target', '_blank');
-                        row.append("strong").text(d[1]['name']);
+                        row.append("strong").text(d3.select(kvPairs[key]).datum()['name']);
 
                         ratingrow = row.append("tr");
                         ratingrow.append("td").text("rating:");
-                        ratingrow.append("td").text(d[1]['rating']);
+                        ratingrow.append("td").text(d3.select(kvPairs[key]).datum()['rating']);
 
                         addressrow = row.append("tr");
                         addressrow.append("td").text("address:");
-                        addressrow.append("td").text(d[1]['LOCATION']['address']);
-
-                        // row.style("background-color", "lightgray");
-
-                        // console.log(table.selectAll('tr'))
-                        table.selectAll('tr').on("mouseover", function (event, d) {
-                            console.log('d')
-                            console.log(d3.select(this));
-                        })
-                        // table.selectAll('.rowr').each(function(d){
-                        //     d.on("mouseover", function() {
-                        //         console.log('hello')
-                        //         console.log(d);
-                        // })
-
-                        //      })
-
+                        addressrow.append("td").text(d3.select(kvPairs[key]).datum()['LOCATION']['address']);
                     });
                 }
 
