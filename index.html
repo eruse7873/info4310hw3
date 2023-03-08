@@ -65,7 +65,7 @@
         <div class="list">
             <h1> List </h1>
             <div id=listContainer>
-                <svg id="svglist"></svg>
+
             </div>
 
         </div>
@@ -363,22 +363,47 @@
                     generateRestaurantList(selectedPoints);
                 }
 
-                let table = d3.select("#list").append("table");
+                let table = d3.select(".list").append("table");
 
-                function generateRestaurantList(restaurants) {
-                    let rowCopy = Object.assign({}, restaurants); // shallow copy
+                function generateRestaurantList(points) {
+                    let rowCopy = Object.assign({}, points); // shallow copy
                     let title = rowCopy.title;
                     delete rowCopy.title;
 
                     let kvPairs = Object.entries(rowCopy);
+
+                    console.log('kvp')
                     console.log(kvPairs);
 
-                    let rows = table.selectAll("tr").data(kvPairs)
-                        .join(enter => enter.append("tr"),
-                            update => update.selectAll("td").remove(),
-                            exit => exit.remove());
 
-                    rows.append("td").append("strong").text(d => d[0]);
+                    kvPairs.forEach((d) => {
+                        console.log('here');
+                        console.log(d);
+                        console.log(d[1]['name']);
+
+                        
+                        
+                        row = table.append("tr")
+                        row.append("strong").text(d[1]['name']);
+
+                        ratingrow = row.append("tr");
+                        ratingrow.append("td").text("rating:");
+                        ratingrow.append("td").text(d[1]['rating']);
+
+                        addressrow = row.append("tr");
+                        addressrow.append("td").text("address:");
+                        addressrow.append("td").text(d[1]['LOCATION']['address']);
+
+                    });
+
+
+
+
+
+
+
+
+
                 }
 
 
