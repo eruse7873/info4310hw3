@@ -21,38 +21,9 @@
                     </select>
                 </div>
                 <div id=filter1>
-                    <!-- <div class='filter1child'> -->
-                    <button id = 'cb' onclick="filter1('cb')">
-                        <h2>&#9749</h2>
-                        <h3>Cafes & Bakeries</h3>
-                    
-                    </button>
-                    <!-- </div> -->
-                    <!-- <div class='filter1child'> -->
-                    <button id = 'market' onclick="filter1('market')">
-                        <h2>&#129382</h2>
-                        <h3>Markets</h3>
-                    </button>
-                    <!-- </div> -->
-                    <!-- <div class='filter1child'> -->
-                    <button id = 'dd' onclick="filter1('dd')">
-                        <h2>&#127863</h2>
-                        <h3>Desserts & Drinks</h3>
-                    </button>
-                    <!-- </div> -->
-                    <button id = 'restaurant' onclick="filter1('restaurant')">
-                        <h2>&#127829</h2>
-                        <h3>Restaurants</h3>
-                    </button>
+                    <!-- buttons created using d3 -->
                 </div>
                 <div id=filter2>
-                    <fieldset>
-                        <legend>Pick your cuisines!</legend>
-                        <input type="checkbox" id="thai" name="thai" checked>
-                        <label for="thai">Thai</label>
-                        <input type="checkbox" id="italian" name="italian">
-                        <label for="italian">Italian</label>
-                    </fieldset>
                 </div>
             </div>
 
@@ -71,14 +42,6 @@
         </div>
         <script>
 
-            function filter(type){
-                // helperfunc
-
-                filter1(type);
-
-            }
-            
-            
             const getData = async function () {
                 const map = d3.select("svg#map");
                 const width = map.attr("width");
@@ -93,9 +56,26 @@
                 let data = await d3.csv("new_boston.csv", d3.autotype);
                 const boston = await d3.json("output-6.json");
 
-                function filter1(type) {
+                // estelle's making buttons for filter1
+                let f1ButtonsData = [];
+                f1Label = ['market', 'cb', 'dd', 'restaurant'];
+                f1H2 = ['&#129382', '&#9749', '&#127863', '&#127829'] //emojis
+                f1H3 = ['Markets', 'Cafes & Bakeries', 'Desserts & Drinks', 'Restaurant'] //h3 labels
+
+                for (let i = 0; i < f1Label.length; i++) {
+                    dict = { label: f1Label[i], h2: f1H2[i], h3: f1H3[i] };
+                    f1ButtonsData.push(dict);
+                }
+                console.log(f1ButtonsData)
+                const f1div = d3.select('div#filter1')
+                f1Buttons = f1div.selectAll('button').data(f1ButtonsData).join('button')
+                    .on('click', filter1)
+
+                f1Buttons.append('h2').html(d => d.h2)
+                    .append('h3').text(d => d.h3)
+
+                function filter1() {
                     // a function that filters the dataset based on the buttons in filter1.
-                    // param: type, a string of the 4 types:
                     // 'cb' = cafes, bakeries
                     // 'market' = market
                     // 'dd' = drinks, desserts
@@ -103,31 +83,70 @@
                     // these strings returned by the buttons directly correlate to 'filter1' attr in data.
                     // returns: filtered data
 
-                    allButtons = d3.selectAll('button')
-                    allButtons.style('background-color','#f0f0f0')
-                    
-                    if (type=='cb'){
-                        button = d3.select('button#cb')
-                        button.style('background-color','lightgray')
-                        console.log(button)
+                    f1Buttons.style('background-color', '#f0f0f0') // reset colors to default
+                    button = d3.select(this)
+                    button.style('background-color', 'lightgray') // darken button if selected
+                    f1Type = d3.select(this).datum().label; // this is the filter criteria
+                    console.log(f1Type)
+
+                    filteredData = data.filter(d => d['filter1'] == f1Type);
+                    console.log(filteredData)
+
+                    const f2div = d3.select('div#filter2')
+                    if (f1Type == 'restaurant' || f1Type == 'dd') {
+          
+                        checkedLabels = [] // reset global variable filters 
+                        
+                        const filter2 = [...new Set(d3.map(filteredData, d => d.filter2))];
+                        console.log(filter2)
+                        // f2div.append('legend').text('more stuff')
+
+                        f2div.selectAll('div.checkbox').remove()
+
+                        // CREDIT: stack overflow checkboxes
+                        // https://stackoverflow.com/questions/52598074/d3-checkbox-label-input-order
+
+                        checkboxes = f2div.selectAll('.checkbox').data(filter2)
+                            .enter()
+                            // .append('label')
+                            .append('div')
+                            .attr('class', 'checkbox')
+                        checkboxes.append('input')
+                            // .attr("checked", true)
+                            .attr('type', 'checkbox')
+                            .attr('id', (d, i) => i)
+                            .on('change', subFilter)
+                        checkboxes.append('label')
+                            .attr('for', (d, i) => i)
+                            .text(d => d)
+
                     }
 
-                    if (type=='market'){
-                        button = d3.select('button#market')
-                        button.style('background-color','lightgray')
+                    // remove checkboxes if others are selected
+
+                    if (f1Type == 'cb' || f1Type == 'market')  {
+                        f2div.selectAll('div.checkbox').remove() 
                     }
 
-                    if (type=='dd'){
-                        button = d3.select('button#dd')
-                        button.style('background-color','lightgray')
-                    }
-
-                    if (type=='restaurant'){
-                        button = d3.select('button#restaurant')
-                        button.style('background-color','lightgray')
-                    }
-
+                    return filteredData
                 }
+                var checkedLabels = []; // list of stuff that is checked
+                function subFilter() {
+
+                    f2Label = d3.select(this).datum()
+                    f2LabelIndex = checkedLabels.indexOf(f2Label)
+                    console.log(f2Label)
+                    console.log(f2LabelIndex)
+                    // check if f2Label is in checkedLabels, add it
+                    if (f2LabelIndex === -1) {
+                        checkedLabels.push(f2Label);
+                    }
+                    if (f2LabelIndex > -1) {
+                        checkedLabels.splice(f2LabelIndex, 1);
+                    }
+                    console.log(checkedLabels)
+                }
+
 
 
                 console.log(boston);

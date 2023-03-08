@@ -63,13 +63,14 @@ button:hover {
     text-align:center;
     font-size: 50px;
     margin:0;
+    pointer-events: none;
 }
 
 #filter1 h3 {
     text-align:center;
     margin:0;
     font-size: 15px;
-    font-weight: normal;
+    pointer-events: none;
 }
 
 select#selectDistance {
@@ -77,9 +78,15 @@ select#selectDistance {
 }
 
 #filter2 {
-    display:block;
+    display:flex;
+    flex-flow: column wrap;
     margin-left:10px;
+    height:150px;
 }
+
+/* label {
+    margin:5px;
+} */
 
 fieldset {
     border: .5px solid black;
