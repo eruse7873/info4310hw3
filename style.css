@@ -41,22 +41,21 @@ html {
     flex-direction:row;
 }
 
-#filter1 .button {
+button {
     /* flex-basis: 90px;
     flex-grow: 0;
     flex-shrink: 0; */
-    width:90px;
+    min-width:90px;
     height: 110px;
     border: .5px solid black;
     border-radius: 15px;
     padding:1%;
     margin:2%;
-    background-color:lightgray; 
-
 }
 
-#filter1 .button:hover {
-    background-color: gray;
+button:hover {
+    background-color: lightgray;
+    cursor: pointer;
 }
 
 #filter1 h2{
