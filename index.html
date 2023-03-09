@@ -106,7 +106,6 @@
                     // these strings returned by the buttons directly correlate to 'filter1' attr in data.
                     // returns: filtered data
 
-
                     table.selectAll('tr').remove();
                     table.selectAll('td').remove();
 
@@ -342,6 +341,7 @@
 
 
                 viewport.on("click", function (event) {
+
                     viewport.selectAll("circle.radius_circle").remove();
 
 
@@ -362,10 +362,14 @@
                 // Find what restaurants are contained within the circle
                 function updateCircleSelection(x, y) {
 
+
+
                     x1 = x
                     y1 = y
 
+
                     highlightedPoints = viewport.selectAll("circle.dots").filter(function (d) {
+                
                         current_circle_radius = viewport.selectAll("circle.radius_circle").attr("r")
 
                         x2 = projection(d.POSITION)[0]
@@ -403,14 +407,13 @@
                                 d3.selectAll(".tooltip").remove()
 
                                 previousR = d3.select(kvPairs[key]).attr("r")
-                                
+
                                 d3.select(kvPairs[key]).attr("r", previousR * 2);
                                 d3.select(kvPairs[key]).attr("opacity", .8);
+                                d3.select(kvPairs[key]).attr("border", "black");
 
                                 map.append("text")
-                                .attr("class", "tooltip")
-                                
-                                    
+                                    .attr("class", "tooltip")
                                     .text(function (d) { return d3.select(kvPairs[key]).datum()['name'] })
                                     .attr("x", d3.select(kvPairs[key]).attr("cx"))
                                     .attr("y", d3.select(kvPairs[key]).attr("cy"));
