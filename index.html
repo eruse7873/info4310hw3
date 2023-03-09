@@ -406,7 +406,7 @@
                             .attr('target', '_blank');
                         row.append("strong").text(d3.select(kvPairs[key]).datum()['name']);
 
-                        ratingrow = row.append("tr");
+                        ratingrow = row.append("div");
                         ratingrow.append("td").text("rating:");
                         ratingrow.append("td").text(d3.select(kvPairs[key]).datum()['rating']);
 
