@@ -106,6 +106,10 @@
                     // these strings returned by the buttons directly correlate to 'filter1' attr in data.
                     // returns: filtered data
 
+
+                    table.selectAll('tr').remove();
+                    table.selectAll('td').remove();
+
                     f1Buttons.style('background-color', '#f0f0f0') // reset colors to default
                     button = d3.select(this)
                     button.style('background-color', 'lightgray') // darken button if selected
