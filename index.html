@@ -20,12 +20,6 @@
                             <option value="thirtyminradius">1.5 miles (30 min walk)</option>
                         </select>
                     </div>
-
-
-                    <!--                 tenminradius = pointAxpixel - pointBxpixel
-                fiveminradius = tenminradius / 2
-                twentyminradius = tenminradius * 2
-                thirtyminradius = tenminradius * 3 -->
                 </div>
                 <div id=filter1>
                     <!-- buttons created using d3 -->
@@ -63,8 +57,6 @@
                 let data = await d3.csv("new_boston.csv", d3.autotype);
                 const boston = await d3.json("output-6.json");
 
-
-                // estelle's making buttons for filter1
                 let f1ButtonsData = [];
                 f1Label = ['market', 'cb', 'dd', 'restaurant'];
                 f1H2 = ['&#129382', '&#9749', '&#127863', '&#127829'] //emojis
@@ -74,7 +66,6 @@
                     dict = { label: f1Label[i], h2: f1H2[i], h3: f1H3[i] };
                     f1ButtonsData.push(dict);
                 }
-                console.log(f1ButtonsData)
                 const f1div = d3.select('div#filter1')
                 f1Buttons = f1div.selectAll('button').data(f1ButtonsData).join('button')
                     .on('click', filter1)
@@ -89,7 +80,6 @@
                 resetButton.append('button').append('text').text("Reset Map").on('click', resetMap);
 
                 function resetMap() {
-                    // viewport.selectAll('circle').remove();
                     drawPoints(data);
                     f1Buttons.style('background-color', '#f0f0f0') // reset colors to default
 
@@ -113,10 +103,8 @@
                     button = d3.select(this)
                     button.style('background-color', 'lightgray') // darken button if selected
                     f1Type = d3.select(this).datum().label; // this is the filter criteria
-                    console.log(f1Type)
 
                     filteredData = data.filter(d => d['filter1'] == f1Type);
-                    console.log(filteredData)
 
                     drawPoints(filteredData);
 
@@ -126,8 +114,6 @@
                         checkedLabels = [] // reset global variable filters 
 
                         const filter2 = [...new Set(d3.map(filteredData, d => d.filter2))];
-                        console.log(filter2)
-                        // f2div.append('legend').text('more stuff')
 
                         f2div.selectAll('div.checkbox').remove()
 
@@ -136,11 +122,9 @@
 
                         checkboxes = f2div.selectAll('.checkbox').data(filter2)
                             .enter()
-                            // .append('label')
                             .append('div')
                             .attr('class', 'checkbox')
                         checkboxes.append('input')
-                            // .attr("checked", true)
                             .attr('type', 'checkbox')
                             .attr('id', (d, i) => i)
                             .on('change', subFilter)
@@ -148,10 +132,7 @@
                             .attr('for', (d, i) => i)
                             .text(d => d)
 
-
                     }
-
-
 
                     // remove checkboxes if others are selected
 
@@ -187,25 +168,13 @@
                         moreFilteredData = [];
                         for (let i = 0; i < checkedLabels.length; i++) {
                             checkData = tryingStuff.filter(d => d['filter2'] == checkedLabels[i]);
-                            console.log('checkedLabels', checkedLabels)
-                            // console.log('check', checkData)
                             moreFilteredData = moreFilteredData.concat(checkData);
-
-                            // console.log('working', moreFilteredData);
-
                             drawPoints(moreFilteredData);
                         }
                     }
 
 
                 }
-
-
-
-                console.log(boston);
-
-
-                console.log(d3.map(data, d => d.latitude))
                 data.forEach((d) => {
                     d.LAT = parseInt(d.latitude)
                     d.LONG = parseInt(d.longitude)
@@ -215,8 +184,6 @@
                     d.LOCATION = JSON.parse(d.location)
                     d.POSITION = [d.LOCATION['coordinate']['longitude'], d.LOCATION['coordinate']['latitude']];
                 })
-                console.log(data);
-
                 var zips = topojson.feature(boston, boston.objects.Boston_Street_Segments);
                 var zipsMesh = topojson.mesh(boston, boston.objects.Boston_Street_Segments);
 
@@ -225,9 +192,6 @@
 
                 var projection = d3.geoMercator().fitSize([mapWidth, mapHeight], zips);
                 var path = d3.geoPath().projection(projection);
-
-
-                // let viewport = map.append("g");
 
                 viewport.append("path")
                     .attr("class", "graticule")
@@ -268,7 +232,7 @@
 
                 var mapZoom = d3.zoom()
                     .scaleExtent([1, 20])
-                    .translateExtent([[-50, -50], [mapWidth + 50, mapHeight + 50]])  // to lock to edges
+                    .translateExtent([[-50, -50], [mapWidth + 50, mapHeight + 50]]) 
                     .on("zoom", mapZoomed);
 
                 map.call(mapZoom);
@@ -327,8 +291,6 @@
 
                 d3.select('select').on("change", function () {
                     selected = d3.select("#selectDistance").node().value;
-                    console.log('selected')
-                    console.log(selected);
                     if (selected === "fiveminradius") { selected = fiveminradius }
                     if (selected === "tenminradius") { selected = tenminradius }
                     if (selected === "twentyminradius") { selected = twentyminradius }
@@ -343,8 +305,6 @@
                 viewport.on("click", function (event) {
 
                     viewport.selectAll("circle.radius_circle").remove();
-
-
 
                     dots = viewport.append("circle")
                         .attr("class", "radius_circle")
@@ -361,8 +321,6 @@
                 })
                 // Find what restaurants are contained within the circle
                 function updateCircleSelection(x, y) {
-
-
 
                     x1 = x
                     y1 = y
