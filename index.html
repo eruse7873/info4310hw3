@@ -395,17 +395,27 @@
                         row = table.append("tr")
                             .attr('class', 'rowR')
                             .on("mouseover", function (event) {
+
+                                d3.selectAll(".tooltip").remove()
+
                                 previousR = d3.select(kvPairs[key]).attr("r")
+                                
                                 d3.select(kvPairs[key]).attr("r", previousR * 2);
                                 d3.select(kvPairs[key]).attr("opacity", .8);
-                                console.log(kvPairs[0]);
-                                d3.select(kvPairs[0]).append("text")
-                                .attr("dx", "882")
-                                    .text(function(d) 
-                                    {return d3.select(kvPairs[key]).datum()['name']});
+
+                                map.append("text")
+                                .attr("class", "tooltip")
+                                
+                                    
+                                    .text(function (d) { return d3.select(kvPairs[key]).datum()['name'] })
+                                    .attr("x", d3.select(kvPairs[key]).attr("cx"))
+                                    .attr("y", d3.select(kvPairs[key]).attr("cy"));
+
                             })
                             .on("mouseout", function (event) {
                                 d3.select(kvPairs[key]).attr("r", previousR);
+                                d3.selectAll(".tooltip").remove()
+
                             })
                             .append('a')
                             .attr('href', d3.select(kvPairs[key]).datum()['url'])
