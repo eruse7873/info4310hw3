@@ -175,15 +175,25 @@ fieldset {
     fill: lightgray;
 }
 
+.list {
+    margin: 10px;
+}
+
 .rowR{
     background-color:lightgray;
-    margin:2px;
+    border-color: black;
 }
 
 .rowR a {
     /* background-color: lightgray; */
     text-decoration: none; 
+    color: black;
 }
+
+.rowR:hover, .rowR:focus {
+    background: darkgray;
+}
+
 
 #listContainer {
     overflow-y: auto;

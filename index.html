@@ -41,7 +41,7 @@
 
         </div>
         <div class="list">
-            <h1> List </h1>
+            <h1> Results </h1>
             <div id=listContainer>
 
             </div>
@@ -397,6 +397,12 @@
                             .on("mouseover", function (event) {
                                 previousR = d3.select(kvPairs[key]).attr("r")
                                 d3.select(kvPairs[key]).attr("r", previousR * 2);
+                                d3.select(kvPairs[key]).attr("opacity", .8);
+                                console.log(kvPairs[0]);
+                                d3.select(kvPairs[0]).append("text")
+                                .attr("dx", "882")
+                                    .text(function(d) 
+                                    {return d3.select(kvPairs[key]).datum()['name']});
                             })
                             .on("mouseout", function (event) {
                                 d3.select(kvPairs[key]).attr("r", previousR);
@@ -406,7 +412,7 @@
                             .attr('target', '_blank');
                         row.append("strong").text(d3.select(kvPairs[key]).datum()['name']);
 
-                        ratingrow = row.append("div");
+                        ratingrow = row.append("div").attr("class", "subRow");
                         ratingrow.append("td").text("rating:");
                         ratingrow.append("td").text(d3.select(kvPairs[key]).datum()['rating']);
 
